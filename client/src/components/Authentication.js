@@ -4,7 +4,10 @@ const Login = () => {
   return (
     <div>
       <h2>Login</h2>
-      {/* Login form */}
+      <div class='login'>
+        
+
+      </div>
     </div>
   );
 };
