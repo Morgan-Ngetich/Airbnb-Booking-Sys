@@ -1,0 +1,112 @@
+/* Navbar Component */
+.navbar {
+  background-color: #ffffff;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #333333;
+  font-weight: bold;
+}
+
+.nav-links li a:hover {
+  color: #008489;
+}
+
+/* Homepage Component */
+.homepage {
+  padding: 20px;
+}
+
+/* Property Listings Component */
+.property-listings {
+  padding: 20px;
+}
+
+.property-card {
+  background-color: #ffffff;
+  border: 1px solid #ebebeb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.property-card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.property-card p {
+  font-size: 16px;
+  color: #666666;
+}
+
+/* Property Details Component */
+.property-details {
+  padding: 20px;
+}
+
+/* Booking Form Component */
+.booking-form {
+  padding: 20px;
+}
+
+/* User Authentication Components */
+.authentication {
+  padding: 20px;
+}
+
+/* User Dashboard Components */
+.dashboard {
+  padding: 20px;
+}
+
+/* Messaging Components */
+.messaging {
+  padding: 20px;
+}
+
+/* Review and Rating Components */
+.review {
+  padding: 20px;
+}
+
+/* Footer Component */
+.footer {
+  background-color: #f2f2f2;
+  padding: 20px;
+  text-align: center;
+}
+
+.footer ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer ul li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.footer ul li a {
+  text-decoration: none;
+  color: #333333;
+}
+
+.footer ul li a:hover {
+  color: #008489;
+}
