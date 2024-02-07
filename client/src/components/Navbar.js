@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaHome, FaUser, FaCog, FaBell, FaEdit, FaEnvelope, FaUsers, FaSyncAlt, FaSearch } from 'react-icons/fa';
 
+
 function Component() {
   return (
     <div key="1" className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
