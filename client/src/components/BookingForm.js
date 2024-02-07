@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const BookingForm = ({ property }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
