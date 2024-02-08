@@ -21,7 +21,7 @@ const Homepage = () => {
   };
 
   const handleClickOutsidePopup = event => {
-    if (popupRef.current && !popupRef.current.contains(event.target)) 
+    if (popupRef.current && !popupRef.current.contains(event.target)) {
       setSelectedProperty(null);
     }
   };
