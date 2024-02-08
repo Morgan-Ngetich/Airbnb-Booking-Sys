@@ -200,6 +200,22 @@ function Navbar() {
         <div className="logo">
           <FaHome />
           <span>Airbnb Users</span>
+
+
+          <a className="lg:hidden" href="#">
+              <FaHome className="h-6 w-6" />
+              <span className="sr-only">Home</span>
+            </a>
+            <div className="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+              <button className="rounded-full">
+                <FaSearch className="w-4 h-4" />
+                <span className="sr-only">Search</span>
+              </button>
+              </div>
+
+
+
+
         </div>
         {/* Sidebar Navigation */}
       </div>
