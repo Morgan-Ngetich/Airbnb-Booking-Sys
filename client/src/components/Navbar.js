@@ -248,7 +248,7 @@ function Navbar() {
             <div className="flex h-[60px] items-center px-6">
               <a className="flex items-center gap-2 font-semibold" href="#">
                 <FaHome className="h-6 w-6" />
-                <span className="">Airbnb Users</span>
+                <span className="">Airbnb Home away from Home</span>
               </a>
             </div>
             <div className="flex-1">
