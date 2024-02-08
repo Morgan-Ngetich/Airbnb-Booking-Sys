@@ -212,8 +212,7 @@
 
 import React from 'react';
 import { FaHome, FaUser, FaCog, FaBell, FaSearch, FaEdit, FaSyncAlt, FaEnvelope, FaUsers } from 'react-icons/fa';
-import '../index.css'; // Import the CSS file
-// import Card from './Card'; // Adjust the path according to your project structure
+import '../index.css';
 
 
 // function Navbar() {
