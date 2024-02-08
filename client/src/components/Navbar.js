@@ -210,15 +210,6 @@
 //   return <div>{children}</div>;
 // }
 
-// // export default Component
-// export default Component;
-
-
-
-
-
-// Navbar.js
-
 import React from 'react';
 import { FaHome, FaUser, FaCog, FaBell, FaSearch, FaEdit, FaSyncAlt, FaEnvelope, FaUsers } from 'react-icons/fa';
 import '../index.css'; // Import the CSS file
@@ -251,8 +242,6 @@ import '../index.css'; // Import the CSS file
 //   );
 // }
 
-// export default Navbar;
-
 
 
 
@@ -261,7 +250,7 @@ import '../index.css'; // Import the CSS file
 function Card({ children }) {
   return <div className="card">{children}</div>;
 }
-function Component() {
+function Navbar() {
   return (
     <div className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40 sidebar sidebar-lg">
@@ -313,5 +302,5 @@ function Component() {
   );
 }
 
-export default Component;
+export default Navbar;
 
