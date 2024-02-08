@@ -251,39 +251,8 @@ function Navbar() {
 
 
     <div className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
-        <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40 sidebar sidebar-lg">
-          <div className="flex flex-col gap-2">
-            <div className="flex h-[60px] items-center px-6">
-              <a className="flex items-center gap-2 font-semibold" href="#">
-                <FaHome className="h-6 w-6" />
-                <span className="">Airbnb Home away from Home</span>
-              </a>
-            </div>
-            <div className="flex-1">
-              <nav className="grid items-start px-4 text-sm font-medium">
-                <a className="nav-link" href="#">
-                  <FaHome className="h-4 w-4" />
-                  Home
-                </a>
-                {/* Add similar nav-link elements for other navigation items */}
-              </nav>
-            </div>
-          </div>
-        </div>
         <div className="flex flex-col">
-          <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
-            <a className="lg:hidden" href="#">
-              <FaHome className="h-6 w-6" />
-              <span className="sr-only">Home</span>
-            </a>
-            <div className="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-              <button className="rounded-full">
-                <FaSearch className="w-4 h-4" />
-                <span className="sr-only">Search</span>
-              </button>
-              {/* Add DropdownMenu and DropdownMenuTrigger components with appropriate styles */}
-            </div>
-          </header>
+          
           <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
             <div className="flex flex-col gap-2">
               {/* Add Card components with appropriate styles */}
