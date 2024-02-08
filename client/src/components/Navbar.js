@@ -222,6 +222,8 @@
 import React from 'react';
 import { FaHome, FaUser, FaCog, FaBell, FaSearch, FaEdit, FaSyncAlt, FaEnvelope, FaUsers } from 'react-icons/fa';
 import '../index.css'; // Import the CSS file
+// import Card from './Card'; // Adjust the path according to your project structure
+
 
 // function Navbar() {
 //   return (
@@ -256,8 +258,9 @@ import '../index.css'; // Import the CSS file
 
 
 
-
-
+function Card({ children }) {
+  return <div className="card">{children}</div>;
+}
 function Component() {
   return (
     <div className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
