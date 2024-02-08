@@ -1,5 +1,28 @@
 // function Component() {
 //   return (
+//     <div key="1" className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
+//       <div className="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
+//         <div className="flex flex-col gap-2">
+//           <div className="flex h-[60px] items-center px-6">
+//             <a className="flex items-center gap-2 font-semibold" href="#">
+//               <FaHome className="h-6 w-6" />
+//               <span className="">Airbnb Users</span>
+//             </a>
+//           </div>
+//           <div className="flex-1">
+//             <nav className="grid items-start px-4 text-sm font-medium">
+//               <a
+//                 className="flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 text-gray-900  transition-all hover:text-gray-900 dark:bg-gray-800 dark:text-gray-50 dark:hover:text-gray-50"
+//                 href="#"
+
+//               >
+//                 <FaBell className="h-4 w-4" />
+//                 Notifications
+//               </a>
+//             </nav>
+//           </div>
+//         </div>
+//       </div>
 //       <div className="flex flex-col">
 //         <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
 //           <a className="lg:hidden" href="#">
