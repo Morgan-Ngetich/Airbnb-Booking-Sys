@@ -232,6 +232,14 @@ function Navbar() {
           <a href="#">
             <FaHome />
             <span className="sr-only">Home</span>
+            </a>
+            <a href="#">
+            <FaBell />
+            <span className="sr-only">Notifications</span>
+            </a>
+            <a href="#">
+            <FaUser />
+            <span className="sr-only">Profile</span>
           </a>
           {/* Other header content */}
         </header>
