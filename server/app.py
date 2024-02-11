@@ -2,11 +2,13 @@ from flask import Flask, jsonify, request, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
+from flask_cors import CORS
 from models import db, User, PropertyListing, Booking, Review, Notification
 from datetime import datetime
 
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 # Configure SQLAlchemy
@@ -87,8 +89,26 @@ class PropertyListingResource(Resource):
 
     def get(self):
         listings = PropertyListing.query.all()
-        result = [{'id': listing.id, 'title': listing.title, 'description': listing.description} for listing in listings]
-        return result, 200
+        result = [{'id': listing.id, 'title': listing.title, 'description': listing.description , 'price': listing.price, 'location': listing.location, 'images': listing.images} for listing in listings]
+        return make_response(jsonify(result), 200)
+    
+    
+# ListingDetailResource
+class ListingDetailResource(Resource):
+    def get(self, listing_id):
+        listing = PropertyListing.query.get(listing_id)
+        if not listing:
+            return {'error': 'Listing not found'}, 404
+        result = {
+            'id': listing.id,
+            'title': listing.title,
+            'description': listing.description,
+            'price': float(listing.price),
+            'location': listing.location,
+            'images': listing.images,
+            'host_id': listing.host_id
+        }
+        return make_response(jsonify(result), 200)
 
 # Notification resource
 class NotificationResource(Resource):
@@ -96,16 +116,21 @@ class NotificationResource(Resource):
         # Example authentication logic - replace with actual authentication logic
         authenticated_user_id = 1  # Replace with actual authenticated user ID retrieval logic
         notifications = Notification.query.filter_by(user_id=authenticated_user_id).all()
-        result = [{'id': notification.id, 'message': notification.message, 'timestamp': notification.timestamp} for notification in notifications]
-        return result, 200
+        result = [{
+            'id': notification.id, 
+            'message': notification.message, 
+            'timestamp': notification.timestamp
+            } for notification in notifications]
+        return make_response(jsonify(result), 200)
 
 class NotificationDetailResource(Resource):
     def get(self, notification_id):
         notification = Notification.query.get(notification_id)
         if not notification:
             return {'error': 'Notification not found'}, 404
-        return {'id': notification.id, 'message': notification.message, 'timestamp': notification.timestamp}, 200
-
+        result = [{'id': notification.id, 'message': notification.message, 'timestamp': notification.timestamp}]
+        return make_response(jsonify(result), 200)
+        
     def delete(self, notification_id):
         notification = Notification.query.get(notification_id)
         if not notification:
@@ -132,6 +157,23 @@ class ReviewResource(Resource):
         reviews = Review.query.all()
         result = [{'id': review.id, 'guest_id': review.guest_id, 'property_id': review.property_id, 'rating': review.rating, 'comment': review.comment} for review in reviews]
         return result, 200
+    
+# ReviewDetailResource
+class ReviewDetailResource(Resource):
+    def get(self, review_id):
+        review = Review.query.get(review_id)
+        if not review:
+            return {'error': 'Review not found'}, 404
+        result = {
+            'id': review.id,
+            'guest_id': review.guest_id,
+            'property_id': review.property_id,
+            'rating': review.rating,
+            'comment': review.comment,
+            'created_at': review.created_at.strftime("%Y-%m-%dT%H:%M:%S")
+        }
+        return make_response(jsonify(result), 200)
+    
 
 # Booking resource
 class BookingResource(Resource):
@@ -213,9 +255,11 @@ class BookingDetailResource(Resource):
 api.add_resource(UserResource, '/users')
 api.add_resource(UserDetailResource, '/users/<int:user_id>')
 api.add_resource(PropertyListingResource, '/listings')
+api.add_resource(ListingDetailResource, '/listings/<int:listing_id>')
 api.add_resource(NotificationResource, '/notifications')
 api.add_resource(NotificationDetailResource, '/notifications/<int:notification_id>')
 api.add_resource(ReviewResource, '/reviews')
+api.add_resource(ReviewDetailResource, '/reviews/<int:review_id>')
 api.add_resource(BookingResource, '/bookings')
 api.add_resource(BookingDetailResource, '/bookings/<int:booking_id>')
 
