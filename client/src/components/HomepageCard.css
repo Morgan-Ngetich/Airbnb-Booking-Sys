@@ -1,0 +1,41 @@
+.card {
+  width: 100%;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.list-group-item {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  border: none;
+}
+
+.list-group-item i {
+  margin-right: 10px;
+}
+
+.btn-primary {
+  background-color: #ff5a5f;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #ff4449;
+}
