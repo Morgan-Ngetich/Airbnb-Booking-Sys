@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 
 const Card = ({ property }) => {
   return (
     <div className="card">
-      <img src={property.image} className="card-img-top" alt="Property Image" />
+      <img src={property.images} className="card-img-top" alt="Property Image" />
       <div className="card-body">
         <h5 className="card-title">{property.title}</h5>
         <p className="card-text">{property.description}</p>
@@ -30,7 +31,9 @@ const Card = ({ property }) => {
           </div>
         </div>
         <div className="d-grid gap-2">
+          <Link to="booking-page">
           <button className="btn btn-primary">Book Now</button>
+          </Link>
         </div>
       </div>
     </div>

@@ -7,8 +7,11 @@ import { FaRegSnowflake } from "react-icons/fa";
 import { LuTent } from "react-icons/lu";
 import { GiFamilyHouse } from "react-icons/gi";
 import { IoGrid } from "react-icons/io5";
+import HomepageCard from './HomepageCard'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import './Homepage.css'
+import './HomepageCard.css'
+
 
 const Homepage = () => {
   const [properties, setProperties] = useState([]);
@@ -122,8 +125,11 @@ const Homepage = () => {
         <div className="popup" ref={popupRef}>
           <div className="popup-content">
             <button className="close-button" onClick={handleClosePopup}>X</button>
-            <h2>{selectedProperty.title}</h2>
-            <img src={selectedProperty.images} alt={selectedProperty.title} />
+            <div className="homepage-card">
+              <HomepageCard property={selectedProperty}/>
+            </div>
+            
+
             <p>{selectedProperty.description}</p>
           </div>
         </div>

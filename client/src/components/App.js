@@ -8,6 +8,7 @@ import BookingForm from './BookingForm';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import Dashboard from './Dashboard';
+import BookingPage from './BookingPage'
 // import AccountDetails from './AccountDetails'
 
 import { MessagingInterface, Notifications } from './Messaging';
@@ -44,6 +45,8 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/reviews" element={<ReviewList />} />
           <Route path="/leave-review" element={<LeaveReview />} />
+          <Route path="/booking-page" element={<BookingPage />} />
+
           {/* <Route path="/account-details/:id" element={<AccountDetails />} /> */}
           {/* Login and SignUp routes without Navbar and Footer */}
           <Route

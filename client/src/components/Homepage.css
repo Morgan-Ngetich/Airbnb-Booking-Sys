@@ -61,14 +61,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .popup-content {
   position: relative;
+  width: 740px;
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 1001;
 }
 
 .close-button {
@@ -140,4 +143,8 @@
 .icon-button span {
   font-size: 14px;
   color: black;
+}
+
+.homepage-card {
+  z-index: 1003;
 }

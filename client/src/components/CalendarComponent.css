@@ -32,10 +32,11 @@
 .button {
   display: flex;
   align-items: center;
-  gap: 4px;
+  /* gap: 4px; */
+  width: 240px;
   border: 1px solid #D1D5DB;
   border-radius: 4px;
-  padding: 8px 12px;
+  /* padding: 8px 7px; */
   background-color: #FFFFFF;
   color: #4B5563;
   font-size: 0.875rem;
@@ -54,8 +55,9 @@
 }
 
 .popover {  
-  display: inline-block;
+  /* display: inline-block; */
   position: relative;
+  /* z-index: 5; */
 }
 
 .popover-content {
@@ -63,7 +65,7 @@
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  z-index: 1000;
+  z-index: 5;
   background-color: #FFFF;
   border: 1px solid #E2E8F0;
   border-radius: 4px;
@@ -71,7 +73,8 @@
   padding: 10px;
 }
 
-.popover button span {
+button span {
+  display: relative;
   font-size: 20px;
   margin-right: 20px; 
 }
@@ -82,7 +85,7 @@
 }
 
 .bi-calendar {
-  margin-right: 70px;
+  /* margin-right: 70px; */
   border-radius: 30px;   
 }
 
@@ -92,5 +95,8 @@
   border-radius: 40px;
   padding: 10px 10px;  
   border: 2px solid grey;
+}
 
+.d-flex {
+  z-index: -1;
 }

@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, request, make_response
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_cors import CORS
-from models import db, User, PropertyListing, Booking, Review, Notification
 from datetime import datetime
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+import bcrypt
 
+from models import db, User, PropertyListing, Booking, Review, Notification
 
 app = Flask(__name__)
 CORS(app)
@@ -18,14 +19,71 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize SQLAlchemy
 db.init_app(app)
 
-# Initialize Flask-Migrate
-migrate = Migrate(app, db)
+# Initialize Flask-JWT-Extended
+app.config['JWT_SECRET_KEY'] = 'b1293b030621e7fae3ba76e9544b26b03b792faecae8be6def59a205fc622eda'
+jwt = JWTManager(app)
 
 # Create tables
 with app.app_context():
     db.create_all()
 
-  
+# User registration (signup)
+class SignUp(Resource):
+    def post(self):
+        data = request.json
+        username = data.get('username')
+        email = data.get('email')
+        password = data.get('password')
+
+        if not username or not email or not password:
+            return {'error': 'Please provide username, email, and password'}, 400
+
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            return {'error': 'Email address already exists'}, 400
+
+        # Hash the password
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        new_user = User(username=username, email=email, password_hash=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return {'message': 'User created successfully'}, 201
+
+# User authentication (login)
+class Login(Resource):
+    def post(self):
+        data = request.json
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email or not password:
+            return {'error': 'Please provide email and password'}, 400
+
+        user = User.query.filter_by(email=email).first()
+        if not user or not user.verify_password(password):
+            return {'error': 'Invalid email or password'}, 401
+
+        # Create JWT access token
+        access_token = create_access_token(identity=user.id)
+        return {'access_token': access_token}, 200
+
+# User logout
+class Logout(Resource):
+    @jwt_required()
+    def post(self):
+        jti = get_raw_jwt()['jti']
+        # Add JTI to the blacklist
+        blacklist.add(jti)
+        return {'message': 'Successfully logged out'}, 200
+
+# Check session
+class CheckSession(Resource):
+    @jwt_required()
+    def get(self):
+        current_user_id = get_jwt_identity()
+        return {'user_id': current_user_id}, 200
+
 # User resource
 class UserResource(Resource):
     def post(self):
@@ -42,14 +100,24 @@ class UserResource(Resource):
 
 class UserDetailResource(Resource):
     def get(self, user_id):
+        # Retrieve the ID of the authenticated user
+        authenticated_user_id = get_jwt_identity()
+        
+        # Check if the authenticated user ID matches the requested user ID
+        if user_id != authenticated_user_id:
+            return {'error': 'Unauthorized'}, 401
+
+        # Proceed with retrieving the user details
         user = User.query.get(user_id)
         if not user:
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'username': user.username, 'email': user.email}, 200
 
     def put(self, user_id):
-        # Example authentication logic - replace with actual authentication logic
-        authenticated_user_id = 1  # Replace with actual authenticated user ID retrieval logic
+        # Retrieve the ID of the authenticated user
+        authenticated_user_id = get_jwt_identity()
+
+        # Check if the authenticated user ID matches the requested user ID
         if user_id != authenticated_user_id:
             return {'error': 'Unauthorized'}, 401
 
@@ -63,8 +131,10 @@ class UserDetailResource(Resource):
         return {'message': 'User updated successfully'}, 200
 
     def delete(self, user_id):
-        # Example authentication logic - replace with actual authentication logic
-        authenticated_user_id = 1  # Replace with actual authenticated user ID retrieval logic
+        # Retrieve the ID of the authenticated user
+        authenticated_user_id = get_jwt_identity()
+
+        # Check if the authenticated user ID matches the requested user ID
         if user_id != authenticated_user_id:
             return {'error': 'Unauthorized'}, 401
 
@@ -79,7 +149,7 @@ class UserDetailResource(Resource):
 class PropertyListingResource(Resource):
     def post(self):
         # Example authentication logic - replace with actual authentication logic
-        authenticated_user_id = 1  # Replace with actual authenticated user ID retrieval logic
+        authenticated_user_id = get_jwt_identity()
         data = request.json
         data['host_id'] = authenticated_user_id
         new_listing = PropertyListing(**data)
@@ -114,7 +184,7 @@ class ListingDetailResource(Resource):
 class NotificationResource(Resource):
     def get(self):
         # Example authentication logic - replace with actual authentication logic
-        authenticated_user_id = 1  # Replace with actual authenticated user ID retrieval logic
+        authenticated_user_id = get_jwt_identity()
         notifications = Notification.query.filter_by(user_id=authenticated_user_id).all()
         result = [{
             'id': notification.id, 
@@ -143,7 +213,7 @@ class NotificationDetailResource(Resource):
 class ReviewResource(Resource):
     def post(self):
         # Example authentication logic - replace with actual authentication logic
-        authenticated_user_id = 1  # Replace with actual authenticated user ID retrieval logic
+        authenticated_user_id = get_jwt_identity()
         data = request.json
         data['guest_id'] = authenticated_user_id        
         # Convert created_at string to datetime object
@@ -250,7 +320,13 @@ class BookingDetailResource(Resource):
         db.session.delete(booking)
         db.session.commit()
         return {'message': 'Booking deleted successfully'}, 200
-      
+
+# Authentication Routes
+api.add_resource(SignUp, '/signup')
+api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
+api.add_resource(CheckSession, '/checksession')
+
 # Resource routing
 api.add_resource(UserResource, '/users')
 api.add_resource(UserDetailResource, '/users/<int:user_id>')

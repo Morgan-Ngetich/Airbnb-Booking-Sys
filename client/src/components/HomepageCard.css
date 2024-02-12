@@ -1,13 +1,16 @@
 .card {
-  width: 100%;
+  width: 900px;
   border: none;
   border-radius: 15px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  z-index: 3003px;
 }
 
 .card-img-top {
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
+  width: 500px;
+  height: 300px;
 }
 
 .card-title {
@@ -38,4 +41,5 @@
 
 .btn-primary:hover {
   background-color: #ff4449;
+  translateY: 10px;
 }

@@ -127,7 +127,7 @@ span {
   top: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 999;
+  z-index: 999px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -137,6 +137,11 @@ span {
 
 .user-profile {
   border: 1px solid red;
+  margin-right: 100px;
+  margin-left: 20px;
+  background-color: #a19e9d;
+  border-radius: 70px;
+  font-size: 50px;
   position: relative;
   z-index: 1001;
 }

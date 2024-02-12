@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FaAirbnb } from 'react-icons/fa';
+import { FaAirbnb, FaHome, FaBell, FaBook, FaUser } from 'react-icons/fa';
+import { MdDashboard } from "react-icons/md";
 import { FiMenu } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { CiLogout } from "react-icons/ci";
@@ -15,9 +16,7 @@ const Navbar = () => {
   const [showCheckOutCalendar, setShowCheckOutCalendar] = useState(false);
 
   const toggleDropdown = () => { 
-    console.log('Toggling dropdown...');   
     setShowDropdown(!showDropdown);
-    console.log('Show dropdown:', showDropdown);
   };
 
   const toggleCheckInCalendar = () => {
@@ -62,15 +61,14 @@ const Navbar = () => {
             <FiMenu className='menu-icon' />
             <CgProfile className="profile-icon" />
             
-
             {showDropdown && (
               <div className="dropdown-menu">
-                <Link to="/">Home</Link>
-                <Link to="/dashboard">Dashboard</Link>
-                <Link to="/notifications">Notifications</Link>
-                <Link to="/booking/:id">Bookings</Link>
-                <Link to="/Account">Account</Link>
-                <Link to="/logout"><CiLogout className='log-out-icon'/>Logout</Link>
+                <Link to="/"><FaHome /> Home</Link>
+                <Link to="/dashboard"><MdDashboard /> Dashboard</Link>
+                <Link to="/notifications"><FaBell /> Notifications</Link>
+                <Link to="/booking/:id"><FaBook /> Bookings</Link>
+                <Link to="/Account"><FaUser /> Account</Link>
+                <Link to="/logout"><CiLogout className='log-out-icon'/> Logout</Link>
               </div>
             )}
           </div>
