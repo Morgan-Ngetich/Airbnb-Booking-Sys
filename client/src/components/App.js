@@ -45,7 +45,7 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/reviews" element={<ReviewList />} />
           <Route path="/leave-review" element={<LeaveReview />} />
-          <Route path="/booking-page" element={<BookingPage />} />
+          <Route path="booking-page/:property_id" element={<BookingPage />} />
 
           {/* <Route path="/account-details/:id" element={<AccountDetails />} /> */}
           {/* Login and SignUp routes without Navbar and Footer */}

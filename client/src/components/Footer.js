@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaAirbnb, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
-import './Footer.css'
+import '../css/Footer.css';
+
 const Footer = () => {
   return (
     <footer className="footer">
@@ -34,20 +35,20 @@ const Footer = () => {
           <div className="footer-section">
             <h3 className="footer-heading">Connect</h3>
             <ul className="footer-social">
-              <li><a href="#"><FaFacebook /></a></li>
-              <li><a href="#"><FaTwitter /></a></li>
-              <li><a href="#"><FaInstagram /></a></li>
+              <li><a href="#"><FaFacebook className="social-icon" /></a></li>
+              <li><a href="#"><FaTwitter className="social-icon" /></a></li>
+              <li><a href="#"><FaInstagram className="social-icon" /></a></li>
             </ul>
           </div>
         </div>
         <div className="footer-bottom">
           <div className="footer-language">
-            <select>
+            <select className="language-select">
               <option value="en">English</option>
               <option value="es">Español</option>
               <option value="fr">Français</option>
             </select>
-            <select>
+            <select className="currency-select">
               <option value="usd">USD</option>
               <option value="eur">EUR</option>
               <option value="gbp">GBP</option>

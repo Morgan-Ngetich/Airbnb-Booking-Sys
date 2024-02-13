@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import Calendar from './Calendar';
 import CalendarComponent from './CalendarComponent';
 import 'react-datepicker/dist/react-datepicker.css';
-import './Navbar.css';
+import '../css/Navbar.css';
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -44,12 +44,16 @@ const Navbar = () => {
           <FaAirbnb className="navbar-logo" />
           <p className='airbnb-p'>airbnb</p>
         </div>
-
+        
         <div className="navbar-center">
           <div className="navbar-links-container">
             <div className="navbar-link">
-              <CalendarComponent label="Check-in" onClick={toggleCheckInCalendar} />
-              {showCheckInCalendar && <Calendar onSelectDate={handleCheckInSelectDate} />}
+              {showCheckInCalendar ? 
+                <CalendarComponent label="Check-in" onClick={toggleCheckInCalendar} /> : 
+                <CalendarComponent label="Check-out" onClick={toggleCheckOutCalendar} />
+              }
+              {showCheckInCalendar ? <Calendar onSelectDate={handleCheckInSelectDate} /> : null}
+              {showCheckOutCalendar ? <Calendar onSelectDate={handleCheckOutSelectDate} /> : null}
             </div>
           </div>
         </div>

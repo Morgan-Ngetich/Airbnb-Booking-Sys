@@ -1,5 +1,5 @@
 import React from 'react';
-import './SmallCard.css';
+import '../css/SmallCard.css';
 import { FaLock, FaGem } from 'react-icons/fa';
 
 const SmallCard = () => {

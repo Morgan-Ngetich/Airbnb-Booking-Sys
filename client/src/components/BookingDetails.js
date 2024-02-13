@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './BookingDetails.css';
+import '../css/BookingDetails.css';
 
 import { FaHashtag } from "react-icons/fa";
 import { FaUserAlt } from "react-icons/fa";
@@ -44,12 +44,12 @@ function BookingDetail() {
   };
 
   return (
-    <div className="card">
-      <div className="card-header">
-        <h2 className="card-title">Booking Details</h2>
-        <p className="card-description">Booking information and status</p>
+    <div className="booking-card">
+      <div className="booking-header">
+        <h2 className="booking-title">Booking Details</h2>
+        <p className="booking-description">Booking information and status</p>
       </div>
-      <div className="card-content">
+      <div className="booking-content">
         <BookingDetailItem icon={<MdMapsHomeWork  />} label="Property ID:" value={bookingData?.property_id} />
         <BookingDetailItem icon={<FaCalendarAlt />} label="Start Date:" value={formatDate(bookingData?.start_date)} />
         <BookingDetailItem icon={<FaCalendarAlt />} label="End Date:" value={formatDate(bookingData?.end_date)} />

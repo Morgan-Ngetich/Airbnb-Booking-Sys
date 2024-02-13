@@ -10,6 +10,10 @@ flask-migrate = "*"
 flask-restful = "*"
 faker = "*"
 flask-cors = "*"
+flask-wtf = "*"
+bcrypt = "*"
+marshmallow-sqlalchemy = "*"
+make-response = "*"
 
 [dev-packages]
 

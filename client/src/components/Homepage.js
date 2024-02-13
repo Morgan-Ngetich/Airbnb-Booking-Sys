@@ -7,11 +7,9 @@ import { FaRegSnowflake } from "react-icons/fa";
 import { LuTent } from "react-icons/lu";
 import { GiFamilyHouse } from "react-icons/gi";
 import { IoGrid } from "react-icons/io5";
-import HomepageCard from './HomepageCard'
-// import 'bootstrap/dist/css/bootstrap.min.css';
-import './Homepage.css'
-import './HomepageCard.css'
-
+import HomepageCard from './HomepageCard';
+import '../css/Homepage.css';
+import '../css/HomepageCard.css';
 
 const Homepage = () => {
   const [properties, setProperties] = useState([]);
@@ -21,7 +19,7 @@ const Homepage = () => {
   const popupRef = useRef(null);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/listings')
+    fetch('/listings')
       .then(response => response.json())
       .then(data => setProperties(data))
       .catch(error => console.error('Error fetching data:', error));
@@ -103,24 +101,29 @@ const Homepage = () => {
           <span>Mansions</span>
         </button>
       </div>
-      
-      <div className="property-grid">
-        {filteredProperties.map(property => (
-          <div key={property.id} className="property-card">
-            <div className="property-image-container">
-              <img src={property.images} alt={property.title} className="property-image" />
+
+      {filteredProperties.length > 0 ? (
+        <div className="property-grid">
+          {filteredProperties.map(property => (
+            <div key={property.id} className="property-card">
+              <div className="property-image-container">
+                <img src={property.images} alt={property.title} className="property-image" />
+              </div>
+              <div className="property-details">
+                <h3 className="property-title">{property.title}</h3>
+                <p className="property-location"><i className="fas fa-map-marker-alt"></i> {property.location}</p>
+                <p className="property-price"><i className="fas fa-dollar-sign"></i> {property.price} per night</p>
+                <button className="description-button" onClick={() => handleDescriptionClick(property)}>
+                  View Details
+                </button>
+              </div>
             </div>
-            <div className="property-details">
-              <h3 className="property-title">{property.title}</h3>
-              <p className="property-location"><i className="fas fa-map-marker-alt"></i> {property.location}</p>
-              <p className="property-price"><i className="fas fa-dollar-sign"></i> {property.price} per night</p>
-              <button className="description-button" onClick={() => handleDescriptionClick(property)}>
-                View Details
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
+
       {selectedProperty && (
         <div className="popup" ref={popupRef}>
           <div className="popup-content">
@@ -128,8 +131,6 @@ const Homepage = () => {
             <div className="homepage-card">
               <HomepageCard property={selectedProperty}/>
             </div>
-            
-
             <p>{selectedProperty.description}</p>
           </div>
         </div>

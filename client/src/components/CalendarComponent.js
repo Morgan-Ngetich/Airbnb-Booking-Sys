@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { BiCalendar } from 'react-icons/bi';
 import Calendar from './Calendar';
-import './CalendarComponent.css';
+import '../css/CalendarComponent.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Component = () => {
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showCheckInCalendar, setShowCheckInCalendar] = useState(false);
+  const [showCheckOutCalendar, setShowCheckOutCalendar] = useState(false);
   const [showWhoDropdown, setShowWhoDropdown] = useState(false);
+  const [checkInDate, setCheckInDate] = useState('');
+  const [checkOutDate, setCheckOutDate] = useState('');
   const [adults, setAdults] = useState(1);
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
@@ -14,16 +18,26 @@ const Component = () => {
   const calendarRef = useRef(null);
   const whoDropdownRef = useRef(null);
 
-  const toggleCalendar = () => {
-    setShowCalendar(!showCalendar);
+  const toggleCheckInCalendar = () => {
+    setShowCheckInCalendar(!showCheckInCalendar);
+  };
+
+  const toggleCheckOutCalendar = () => {
+    setShowCheckOutCalendar(!showCheckOutCalendar);
   };
 
   const toggleWhoDropdown = () => {
     setShowWhoDropdown(!showWhoDropdown);
   };
 
-  const handleSelectDate = (date) => {
-    console.log('Selected date:', date);
+  const handleSelectDate = (date, type) => {
+    if (type === 'checkIn') {
+      setCheckInDate(date);
+      setShowCheckInCalendar(false); // Close check-in calendar after selection
+    } else if (type === 'checkOut') {
+      setCheckOutDate(date);
+      setShowCheckOutCalendar(false); // Close check-out calendar after selection
+    }
   };
 
   const handleIncrement = (type) => {
@@ -48,7 +62,7 @@ const Component = () => {
   const handleDecrement = (type) => {
     switch (type) {
       case 'adults':
-        if (adults > 0) setAdults(adults - 1);
+        if (adults > 0) setAdults(adults - 1);        
         break;
       case 'children':
         if (children > 0) setChildren(children - 1);
@@ -72,7 +86,8 @@ const Component = () => {
         whoDropdownRef.current &&
         !whoDropdownRef.current.contains(event.target)
       ) {
-        setShowCalendar(false);
+        setShowCheckInCalendar(false);
+        setShowCheckOutCalendar(false);
         setShowWhoDropdown(false);
       }
     };
@@ -97,28 +112,33 @@ const Component = () => {
             placeholder="Where are you going?"
             type="search"
             style={{ paddingRight: '40px', cursor: 'pointer' }}
+            value={`${checkInDate ? checkInDate : 'Check-in'} - ${checkOutDate ? checkOutDate : 'Check-out'}`}
+            readOnly
           />
-          <i className="fas fa-search position-absolute top-50 translate-middle-y end-0 me-2"></i>
+          <Link to='/search'>
+            <i className="fas fa-search position-absolute top-50 translate-middle-y end-0 me-2"></i>
+          </Link >
+          
         </div>
         <div className="popover">
-          <button onClick={toggleCalendar} className="button btn flex items-center gap-1 border rounded-pill px-3 py-2 bg-white text-sm font-semibold text-gray-700 transition-colors duration-200 ease-in-out hover:bg-gray-50 hover:text-blue-500 focus:outline-none focus:border-blue-500">
+          <button onClick={toggleCheckInCalendar} className="button btn flex items-center gap-1 border rounded-pill px-3 py-2 bg-white text-sm font-semibold text-gray-700 transition-colors duration-200 ease-in-out hover:bg-gray-50 hover:text-blue-500 focus:outline-none focus:border-blue-500">
             <span>Check-in</span>
             <BiCalendar className="bi-calendar" />
           </button>
-          {showCalendar && (
+          {showCheckInCalendar && (
             <div className="popover-content" ref={calendarRef}>
-              {showCalendar && <Calendar onSelectDate={handleSelectDate} />}
+              <Calendar onSelectDate={(date) => handleSelectDate(date, 'checkIn')} />
             </div>
           )}
         </div>
         <div className="popover">
-          <button onClick={toggleCalendar} className="button btn flex items-center gap-1 border rounded-pill px-3 py-2 bg-white text-sm font-semibold text-gray-700 transition-colors duration-200 ease-in-out hover:bg-gray-50 hover:text-blue-500 focus:outline-none focus:border-blue-500">
+          <button onClick={toggleCheckOutCalendar} className="button btn flex items-center gap-1 border rounded-pill px-3 py-2 bg-white text-sm font-semibold text-gray-700 transition-colors duration-200 ease-in-out hover:bg-gray-50 hover:text-blue-500 focus:outline-none focus:border-blue-500">
             <span>Check-out</span>
             <BiCalendar className="bi-calendar" />
           </button>
-          {showCalendar && (
+          {showCheckOutCalendar && (
             <div className="popover-content" ref={calendarRef}>
-              {showCalendar && <Calendar onSelectDate={handleSelectDate} />}
+              <Calendar onSelectDate={(date) => handleSelectDate(date, 'checkOut')} />
             </div>
           )}
         </div>
@@ -135,11 +155,11 @@ const Component = () => {
                     <p className="text-sm text-muted">Ages 13 or above</p>
                   </div>
                   <div className="d-flex gap-2">
-                    <button onClick={() => handleDecrement('adults')} className="btn btn-sm btn-outline-secondary">
+                    <button onClick={() => handleDecrement('adults')} className="btn btn-sm btn-outline-secondary cursor-pointer">
                       -
                     </button>
                     <span id="adults">{adults}</span>
-                    <button onClick={() => handleIncrement('adults')} className="btn btn-sm btn-outline-secondary">
+                    <button onClick={() => handleIncrement('adults')} className="btn btn-sm btn-outline-secondary cursor-pointer">
                       +
                     </button>
                   </div>
@@ -150,11 +170,11 @@ const Component = () => {
                     <p className="text-sm text-muted">Ages 2-12</p>
                   </div>
                   <div className="d-flex gap-2">
-                    <button onClick={() => handleDecrement('children')} className="btn btn-sm btn-outline-secondary">
+                    <button onClick={() => handleDecrement('children')} className="btn btn-sm btn-outline-secondary cursor-pointer">
                       -
                     </button>
                     <span id="children">{children}</span>
-                    <button onClick={() => handleIncrement('children')} className="btn btn-sm btn-outline-secondary">
+                    <button onClick={() => handleIncrement('children')} className="btn btn-sm btn-outline-secondary cursor-pointer">
                       +
                     </button>
                   </div>
@@ -167,11 +187,11 @@ const Component = () => {
                     <p className="text-sm text-muted">Under 2</p>
                   </div>
                   <div className="d-flex gap-2">
-                    <button onClick={() => handleDecrement('infants')} className="btn btn-sm btn-outline-secondary">
+                    <button onClick={() => handleDecrement('infants')} className="btn btn-sm btn-outline-secondary cursor-pointer">
                       -
                     </button>
                     <span id="infants">{infants}</span>
-                    <button onClick={() => handleIncrement('infants')} className="btn btn-sm btn-outline-secondary">
+                    <button onClick={() => handleIncrement('infants')} className="btn btn-sm btn-outline-secondary cursor-pointer">
                       +
                     </button>
                   </div>
@@ -182,11 +202,11 @@ const Component = () => {
                     <p className="text-sm text-muted">Add pets after booking</p>
                   </div>
                   <div className="d-flex gap-2">
-                    <button onClick={() => handleDecrement('pets')} className="btn btn-sm btn-outline-secondary">
+                    <button onClick={() => handleDecrement('pets')} className="btn btn-sm btn-outline-secondary cursor-pointer">
                       -
                     </button>
                     <span id="pets">{pets}</span>
-                    <button onClick={() => handleIncrement('pets')} className="btn btn-sm btn-outline-secondary">
+                    <button onClick={() => handleIncrement('pets')} className="btn btn-sm btn-outline-secondary cursor-pointer">
                       +
                     </button>
                   </div>

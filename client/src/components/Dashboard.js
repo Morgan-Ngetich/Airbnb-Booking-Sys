@@ -1,54 +1,65 @@
 import React, { useState } from 'react';
 import { FaUser, FaBell, FaBookmark, FaClipboardList } from 'react-icons/fa';
-import AccountDetails from './AccountDetails'
-import NotificationCard from './NotificationCard'
-import BookingDetail from './BookingDetails'
-import SmallCard from './SmallCard'
+import AccountDetails from './AccountDetails';
+import NotificationCard from './NotificationCard';
+import BookingDetail from './BookingDetails';
+import SmallCard from './SmallCard';
 
-import './Dashboard.css'
+import '../css/Dashboard.css';
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('account');
 
   return (
     <div className="dashboard-container">
-      <div className="navbar-dash">
-        <div className={`navbar-dash-item ${selectedTab === 'account' ? 'active' : ''}`} onClick={() => setSelectedTab('account')}>
-          <FaUser className="navbar-dash-icon" />
-          <span className="navbar-dash-text">Account</span>
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h1 className="logo">Dashboard</h1>
         </div>
-        <div className={`navbar-dash-item ${selectedTab === 'notifications' ? 'active' : ''}`} onClick={() => setSelectedTab('notifications')}>
-          <FaBell className="navbar-dash-icon" />
-          <span className="navbar-dash-text">Notifications</span>
-        </div>
-        <div className={`navbar-dash-item ${selectedTab === 'saved' ? 'active' : ''}`} onClick={() => setSelectedTab('saved')}>
-          <FaBookmark className="navbar-dash-icon" />
-          <span className="navbar-dash-text">Saved Listings</span>
-        </div>
-        <div className={`navbar-dash-item ${selectedTab === 'bookings' ? 'active' : ''}`} onClick={() => setSelectedTab('bookings')}>
-          <FaClipboardList className="navbar-dash-icon" />
-          <span className="navbar-dash-text">Bookings</span>
+        <div className="menu">
+          <div
+            className={`menu-item ${selectedTab === 'account' ? 'active' : ''}`}
+            onClick={() => setSelectedTab('account')}
+          >
+            <FaUser className="menu-icon" />
+            <span className="menu-text">Account</span>
+          </div>
+          <div
+            className={`menu-item ${selectedTab === 'notifications' ? 'active' : ''}`}
+            onClick={() => setSelectedTab('notifications')}
+          >
+            <FaBell className="menu-icon" />
+            <span className="menu-text">Notifications</span>
+          </div>
+          <div
+            className={`menu-item ${selectedTab === 'saved' ? 'active' : ''}`}
+            onClick={() => setSelectedTab('saved')}
+          >
+            <FaBookmark className="menu-icon" />
+            <span className="menu-text">Saved Listings</span>
+          </div>
+          <div
+            className={`menu-item ${selectedTab === 'bookings' ? 'active' : ''}`}
+            onClick={() => setSelectedTab('bookings')}
+          >
+            <FaClipboardList className="menu-icon" />
+            <span className="menu-text">Bookings</span>
+          </div>
         </div>
         <SmallCard />
       </div>
       <div className="content">
-        <div className={`account-section ${selectedTab === 'account' ? 'active' : ''}`}>
-          {/* Account details form or component */}
-          <h2>Account Details</h2>
+        <div className={`section ${selectedTab === 'account' ? 'active' : ''}`}>
           <AccountDetails />
-
         </div>
-        <div className={`notifications-section ${selectedTab === 'notifications' ? 'active' : ''}`}>
-          {/* Notifications list */}
-          <h2>Notifications</h2>
+        <div className={`section ${selectedTab === 'notifications' ? 'active' : ''}`}>
           <NotificationCard />
         </div>
-        <div className={`saved-section ${selectedTab === 'saved' ? 'active' : ''}`}>
-          {/* Saved listings */}
-          <h2>Saved Listings</h2>
-          {/* Saved listings */}
+        <div className={`section ${selectedTab === 'saved' ? 'active' : ''}`}>
+          <h2 className="section-title">Saved Listings</h2>
+          {/* Add content for Saved Listings */}
         </div>
-        <div className={`bookings-section ${selectedTab === 'bookings' ? 'active' : ''}`}>
+        <div className={`section ${selectedTab === 'bookings' ? 'active' : ''}`}>
           <BookingDetail />
         </div>
       </div>
@@ -57,4 +68,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
