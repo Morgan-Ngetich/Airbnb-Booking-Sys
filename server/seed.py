@@ -79,11 +79,11 @@ def generate_notifications(num_notifications, num_users):
         db.session.commit()
 
 if __name__ == '__main__':
-    num_users = 20
-    num_listings = 20
-    num_bookings = 50
-    num_reviews = 30
-    num_notifications = 40
+    num_users = 10
+    num_listings = 10
+    num_bookings = 10
+    num_reviews = 5
+    num_notifications = 5
     
     generate_users(num_users)
     generate_property_listings(num_listings, num_users)

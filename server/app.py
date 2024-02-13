@@ -1,16 +1,19 @@
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, make_response, session, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_cors import CORS
 from datetime import datetime
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import bcrypt
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, IntegerField, DecimalField, SubmitField
+from wtforms.validators import DataRequired, Email, Length, ValidationError
+from flask_wtf.csrf import CSRFProtect  # Import CSRFProtect from Flask-WTF
+import secrets  # Import the secrets module for generating CSRF token
 
 from models import db, User, PropertyListing, Booking, Review, Notification
+from flask_migrate import Migrate
 
 app = Flask(__name__)
-CORS(app)
-api = Api(app)
 
 # Configure SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -18,71 +21,127 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy
 db.init_app(app)
+migrate = Migrate(app, db)
 
-# Initialize Flask-JWT-Extended
-app.config['JWT_SECRET_KEY'] = 'b1293b030621e7fae3ba76e9544b26b03b792faecae8be6def59a205fc622eda'
-jwt = JWTManager(app)
+def generate_csrf_token():
+    # Generate a random CSRF token using the secrets module
+    csrf_token = secrets.token_urlsafe(32)
+    return csrf_token
+
+# Define a route for fetching the CSRF token
+@app.route('/csrf-token')
+def csrf_token():
+    # Generate or retrieve the CSRF token here
+    csrf_token = generate_csrf_token()  # You need to implement this function
+    return jsonify({'csrfToken': csrf_token})
+
+CORS(app, supports_credentials=True)
+api = Api(app)
+
+
+
+
+
+# Configure session to use cookies
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
+app.config['SESSION_TYPE'] = 'filesystem'  # Use filesystem for storing session data
+
+app.secret_key = 'b1293b030621e7fae3ba76e9544b26b03b792faecae8be6def59a205fc622eda'
+
+# Initialize CSRF protection
+csrf = CSRFProtect(app)
 
 # Create tables
 with app.app_context():
     db.create_all()
 
+# User registration form
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=50)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+
 # User registration (signup)
 class SignUp(Resource):
     def post(self):
-        data = request.json
-        username = data.get('username')
-        email = data.get('email')
-        password = data.get('password')
+        form = RegistrationForm(request.form)
+        if form.validate():
+            username = form.username.data
+            email = form.email.data
+            password = form.password.data
 
-        if not username or not email or not password:
-            return {'error': 'Please provide username, email, and password'}, 400
+            existing_user = User.query.filter_by(email=email).first()
+            if existing_user:
+                return {'error': 'Email address already exists'}, 400
 
-        existing_user = User.query.filter_by(email=email).first()
-        if existing_user:
-            return {'error': 'Email address already exists'}, 400
+            # Hash the password
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-        # Hash the password
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            new_user = User(username=username, email=email, password_hash=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
+            return {'message': 'User created successfully'}, 201
+        else:
+            errors = {}
+            for field, errs in form.errors.items():
+                errors[field] = errs[0]
+            return {'error': errors}, 400
 
-        new_user = User(username=username, email=email, password_hash=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        return {'message': 'User created successfully'}, 201
+    def get(self):
+        form = RegistrationForm()
+        return render_template('signup.html', form=form)
+
+# User login form
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
 
 # User authentication (login)
 class Login(Resource):
     def post(self):
-        data = request.json
-        email = data.get('email')
-        password = data.get('password')
+        form = LoginForm(request.form)
+        if form.validate():
+            email = form.email.data
+            password = form.password.data
 
-        if not email or not password:
-            return {'error': 'Please provide email and password'}, 400
+            user = User.query.filter_by(email=email).first()
+            if not user or not bcrypt.checkpw(password.encode('utf-8'), user.password_hash):
+                return {'error': 'Invalid email or password'}, 401
 
-        user = User.query.filter_by(email=email).first()
-        if not user or not user.verify_password(password):
-            return {'error': 'Invalid email or password'}, 401
+            # Create session for the authenticated user
+            session['user_id'] = user.id
 
-        # Create JWT access token
-        access_token = create_access_token(identity=user.id)
-        return {'access_token': access_token}, 200
+            return {'message': 'Login successful'}, 200
+        else:
+            errors = {}
+            for field, errs in form.errors.items():
+                errors[field] = errs[0]
+            return {'error': errors}, 400
+
+    def get(self):
+        form = LoginForm()
+        return render_template('login.html', form=form)
 
 # User logout
 class Logout(Resource):
-    @jwt_required()
     def post(self):
-        jti = get_raw_jwt()['jti']
-        # Add JTI to the blacklist
-        blacklist.add(jti)
-        return {'message': 'Successfully logged out'}, 200
+        # Clear the session data
+        session.clear()
+        return {'message': 'Logout successful'}, 200
 
 # Check session
 class CheckSession(Resource):
-    @jwt_required()
     def get(self):
-        current_user_id = get_jwt_identity()
-        return {'user_id': current_user_id}, 200
+        if 'user_id' in session:
+            current_user_id = session['user_id']
+            return {'user_id': current_user_id}, 200
+        else:
+            return {'message': 'No active session'}, 401
+
+
+
+
 
 # User resource
 class UserResource(Resource):
@@ -98,26 +157,56 @@ class UserResource(Resource):
         result = [{'id': user.id, 'username': user.username, 'email': user.email} for user in users]
         return result, 200
 
+
+
+# User detail resource
+class SignUpForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    submit = SubmitField('Sign Up')
+    
+    
 class UserDetailResource(Resource):
-    def get(self, user_id):
-        # Retrieve the ID of the authenticated user
-        authenticated_user_id = get_jwt_identity()
+    def post(self):
+        form = SignUpForm()
+        if form.validate_on_submit():
+            username = form.username.data
+            email = form.email.data
+            password = form.password.data
+
+            existing_user = User.query.filter_by(email=email).first()
+            if existing_user:
+                return {'error': 'Email address already exists'}, 400
+
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            new_user = User(username=username, email=email, password_hash=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
+            return {'message': 'User created successfully'}, 201
+        else:
+            return {'error': 'Invalid input data'}, 400
         
-        # Check if the authenticated user ID matches the requested user ID
+    def get(self, user_id):
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
+        authenticated_user_id = session['user_id']
+
         if user_id != authenticated_user_id:
             return {'error': 'Unauthorized'}, 401
 
-        # Proceed with retrieving the user details
         user = User.query.get(user_id)
         if not user:
             return {'error': 'User not found'}, 404
         return {'id': user.id, 'username': user.username, 'email': user.email}, 200
 
     def put(self, user_id):
-        # Retrieve the ID of the authenticated user
-        authenticated_user_id = get_jwt_identity()
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
 
-        # Check if the authenticated user ID matches the requested user ID
+        authenticated_user_id = session['user_id']
+
         if user_id != authenticated_user_id:
             return {'error': 'Unauthorized'}, 401
 
@@ -131,10 +220,11 @@ class UserDetailResource(Resource):
         return {'message': 'User updated successfully'}, 200
 
     def delete(self, user_id):
-        # Retrieve the ID of the authenticated user
-        authenticated_user_id = get_jwt_identity()
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
 
-        # Check if the authenticated user ID matches the requested user ID
+        authenticated_user_id = session['user_id']
+
         if user_id != authenticated_user_id:
             return {'error': 'Unauthorized'}, 401
 
@@ -148,8 +238,10 @@ class UserDetailResource(Resource):
 # Property listing resource
 class PropertyListingResource(Resource):
     def post(self):
-        # Example authentication logic - replace with actual authentication logic
-        authenticated_user_id = get_jwt_identity()
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
+        authenticated_user_id = session['user_id']
         data = request.json
         data['host_id'] = authenticated_user_id
         new_listing = PropertyListing(**data)
@@ -159,11 +251,10 @@ class PropertyListingResource(Resource):
 
     def get(self):
         listings = PropertyListing.query.all()
-        result = [{'id': listing.id, 'title': listing.title, 'description': listing.description , 'price': listing.price, 'location': listing.location, 'images': listing.images} for listing in listings]
+        result = [{'id': listing.id, 'title': listing.title, 'description': listing.description , 'price': listing.price, 'location': listing.location, 'images': listing.images ,'host_id': listing.host_id} for listing in listings]
         return make_response(jsonify(result), 200)
-    
-    
-# ListingDetailResource
+
+# Listing detail resource
 class ListingDetailResource(Resource):
     def get(self, listing_id):
         listing = PropertyListing.query.get(listing_id)
@@ -183,8 +274,10 @@ class ListingDetailResource(Resource):
 # Notification resource
 class NotificationResource(Resource):
     def get(self):
-        # Example authentication logic - replace with actual authentication logic
-        authenticated_user_id = get_jwt_identity()
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
+        authenticated_user_id = session['user_id']
         notifications = Notification.query.filter_by(user_id=authenticated_user_id).all()
         result = [{
             'id': notification.id, 
@@ -195,6 +288,9 @@ class NotificationResource(Resource):
 
 class NotificationDetailResource(Resource):
     def get(self, notification_id):
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
         notification = Notification.query.get(notification_id)
         if not notification:
             return {'error': 'Notification not found'}, 404
@@ -202,6 +298,9 @@ class NotificationDetailResource(Resource):
         return make_response(jsonify(result), 200)
         
     def delete(self, notification_id):
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
         notification = Notification.query.get(notification_id)
         if not notification:
             return {'error': 'Notification not found'}, 404
@@ -212,8 +311,10 @@ class NotificationDetailResource(Resource):
 # Review resource
 class ReviewResource(Resource):
     def post(self):
-        # Example authentication logic - replace with actual authentication logic
-        authenticated_user_id = get_jwt_identity()
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
+        authenticated_user_id = session['user_id']
         data = request.json
         data['guest_id'] = authenticated_user_id        
         # Convert created_at string to datetime object
@@ -228,26 +329,29 @@ class ReviewResource(Resource):
         result = [{'id': review.id, 'guest_id': review.guest_id, 'property_id': review.property_id, 'rating': review.rating, 'comment': review.comment} for review in reviews]
         return result, 200
     
-# ReviewDetailResource
+# Review detail resource
 class ReviewDetailResource(Resource):
     def get(self, review_id):
         review = Review.query.get(review_id)
         if not review:
             return {'error': 'Review not found'}, 404
-        result = {
+        result = [{
             'id': review.id,
             'guest_id': review.guest_id,
             'property_id': review.property_id,
             'rating': review.rating,
-            'comment': review.comment,
+            'comment': [review.comment],
             'created_at': review.created_at.strftime("%Y-%m-%dT%H:%M:%S")
-        }
+        }]
         return make_response(jsonify(result), 200)
     
 
 # Booking resource
 class BookingResource(Resource):
     def post(self):
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
         data = request.json
         # Convert date strings to Python date objects
         data['start_date'] = datetime.strptime(data['start_date'], "%Y-%m-%d")
@@ -274,6 +378,7 @@ class BookingResource(Resource):
             result.append(booking_data)            
         return make_response(jsonify(result), 200)
 
+# Booking detail resource
 class BookingDetailResource(Resource):
     def get(self, booking_id):
         booking = Booking.query.get(booking_id)
@@ -292,6 +397,9 @@ class BookingDetailResource(Resource):
         )
 
     def put(self, booking_id):
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
         data = request.json
         booking = Booking.query.get(booking_id)
         if not booking:
@@ -314,6 +422,9 @@ class BookingDetailResource(Resource):
 
 
     def delete(self, booking_id):
+        if 'user_id' not in session:
+            return {'error': 'Unauthorized'}, 401
+
         booking = Booking.query.get(booking_id)
         if not booking:
             return {'error': 'Booking not found'}, 404
@@ -322,10 +433,10 @@ class BookingDetailResource(Resource):
         return {'message': 'Booking deleted successfully'}, 200
 
 # Authentication Routes
-api.add_resource(SignUp, '/signup')
-api.add_resource(Login, '/login')
-api.add_resource(Logout, '/logout')
-api.add_resource(CheckSession, '/checksession')
+api.add_resource(SignUp, '/signup', endpoint='signup')
+api.add_resource(Login, '/login', endpoint='login')
+api.add_resource(Logout, '/logout', endpoint='logout')
+api.add_resource(CheckSession, '/checksession', endpoint='check-session')
 
 # Resource routing
 api.add_resource(UserResource, '/users')
