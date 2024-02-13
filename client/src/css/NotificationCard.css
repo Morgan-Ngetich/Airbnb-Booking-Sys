@@ -1,0 +1,64 @@
+.notification-container {
+  padding: 20px;
+}
+
+.notification-card {
+  background-color: #0F0F0F;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bell-icon svg {
+  color: #FFFFFF;
+  width: 24px;
+  height: 24px;
+}
+
+.mark-as-read {
+  background-color: #3E92CC;
+  border: none;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mark-as-read:hover {
+  background-color: #306D9E;
+}
+
+.card-body {
+  margin-top: 20px;
+}
+
+.notifications {
+  transition: all 0.3s ease;
+}
+
+.notification {
+  background-color: #1A1A1A;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.notification .message {
+  color: #FFFFFF;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.notification .timestamp {
+  color: #CCCCCC;
+  font-size: 12px;
+}

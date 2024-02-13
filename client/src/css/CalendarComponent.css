@@ -1,0 +1,101 @@
+
+.text-sm {
+  font-size: 0.7rem;
+}
+
+.text-sm-span {
+  margin-right: 30px;  
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-normal {
+  font-weight: 200;
+}
+
+.grid {
+  display: grid;
+  gap: 8px;
+}
+
+.input {
+  font-family: inherit;
+  font-size: inherit;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  padding: 8px 12px;
+  outline: none;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  /* gap: 4px; */
+  width: 240px;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  /* padding: 8px 7px; */
+  background-color: #FFFFFF;
+  color: #4B5563;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.3s, color 0.3s;
+  outline: none;
+}
+
+.button-container button {
+  margin-left: 30px;
+}
+
+.button:hover {
+  background-color: #E5E7EB;
+  color: #1F2937;
+}
+
+.popover {  
+  /* display: inline-block; */
+  position: relative;
+  /* z-index: 5; */
+}
+
+.popover-content {
+  display: inline;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 5;
+  background-color: #FFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+
+button span {
+  display: relative;
+  font-size: 20px;
+  margin-right: 20px; 
+}
+
+.button-container {
+  display: inline;
+  gap: 4px;
+}
+
+.bi-calendar {
+  /* margin-right: 70px; */
+  border-radius: 30px;   
+}
+
+.navbar-calendar {
+  display: wrap;
+  background-color: white;
+  border-radius: 40px;
+  padding: 10px 10px;  
+  border: 2px solid grey;
+}
+
+
+  

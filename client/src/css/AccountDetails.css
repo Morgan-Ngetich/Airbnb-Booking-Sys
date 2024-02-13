@@ -1,0 +1,104 @@
+.account-details-container {
+  padding: 20px;
+}
+
+.account-details-card {
+  background-color: #0F0F0F;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.account-details-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.account-details-icon {
+  color: #FFFFFF;
+  width: 90px;
+  height: 90px;
+}
+
+.account-details-title {
+  color: #FFFFFF;
+  font-size: 24px;
+  margin-left: 20px;
+}
+
+.edit-button {
+  background-color: #3E92CC;
+  border: none;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-button:hover {
+  background-color: #306D9E;
+}
+
+.account-details-info {
+  margin-top: 20px;
+}
+
+.account-details-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.account-details-label {
+  color: #CCCCCC;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.account-details-value {
+  color: #FFFFFF;
+  font-size: 16px;
+}
+
+.account-details-form-container {
+  margin-top: 20px;
+}
+
+.account-details-form-container h3 {
+  color: #FFFFFF;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.account-details-form-container .form-group {
+  margin-bottom: 15px;
+}
+
+.account-details-form-container label {
+  color: #FFFFFF;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.account-details-form-container input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.account-details-form-container button {
+  background-color: #3E92CC;
+  border: none;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.account-details-form-container button:hover {
+  background-color: #306D9E;
+}

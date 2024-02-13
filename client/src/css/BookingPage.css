@@ -1,0 +1,207 @@
+.booking-page {
+  background-color: #111;
+  color: #fff;
+  padding: 50px 0;  
+}
+
+.main-card, .price-card {
+  background-color: #222;
+  border: none;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  margin-bottom: 30px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.review-card .card-body {
+  background-color: white;
+  color: black;
+  border-radius: 30px;
+}
+
+.main-card .card-body, .price-card .card-body {
+  padding: 40px;
+}
+
+.main-card .card-title, .price-card .card-title {
+  font-size: 34px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.main-card .card-subtitle, .price-card .card-subtitle {
+  font-size: 22px;
+  color: #ccc;
+}
+
+.rating {
+  margin-top: 20px;
+}
+
+.star-icon {
+  color: #ffc107;
+}
+
+.host-info {
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+.person-icon {
+  color: #17a2b8;
+  font-size: 35px;
+}
+
+.superhost-badge {
+  background-color: #28a745;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 18px;
+  margin-left: 5px;
+}
+
+.location-info {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.location-icon {
+  color: red;
+}
+
+.amenities {
+  margin-top: 30px;
+  padding-left: 20px;
+  box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.5);
+  border-radius: 10px; 
+}
+
+.amenities h5 {
+  font-size: 35px;
+  margin-bottom: 15px;
+  
+}
+
+.amenities ul {
+  list-style: none;
+  padding-left: 10px;
+}
+
+.amenities ul li {
+  font-size: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.reviews {
+  margin-top: 30px;
+  padding: 20px;
+}
+
+.reviews h5 {
+  font-size: 26px;
+  margin-bottom: 15px;
+}
+
+.review-card {
+  margin-bottom: 20px;
+  border: none;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+}
+
+.review-card .card-body {
+  padding: 20px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.rating-stars {
+  font-size: 20px;
+}
+
+.star {
+  color: grey;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.star.filled {
+  color: #adff2f;
+}
+
+.star:hover, .star.filled:hover {
+  cursor: pointer;
+}
+
+.price-card .card-body {
+  text-align: center;
+  color: white;
+
+}
+
+.price-card .btn-success {
+  margin-top: 20px;
+}
+
+.auth-message {
+  font-size: 20px;
+  margin-top: 20px;
+  color: red;
+  padding: 10px;  
+  border-radius: 20px;
+  background-color: rgba(255, 0, 0, 0.5);
+  box-shadow: 0px 4px 8px rgba(255, 0, 0, 0.6);
+}
+
+/* Futuristic Animations
+@keyframes glowing {
+  0% {
+    box-shadow: 0 0 20px #00c2ff;
+  }
+  50% {
+    box-shadow: 0 0 20px #00c2ff, 0 0 50px #00c2ff;
+  }
+  100% {
+    box-shadow: 0 0 20px #00c2ff;
+  }
+}
+
+.futuristic-animation {
+  animation: glowing 2s infinite;
+} */
+
+.futuristic-link {
+  color: #00c2ff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.futuristic-link:hover {
+  color: orange;
+}
+
+.futuristic-button {
+  background-color: orange;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.futuristic-button:hover {
+  background-color: #e69112;
+}
+
+
+
+
