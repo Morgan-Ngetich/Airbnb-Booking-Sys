@@ -31,7 +31,7 @@ const Card = ({ property }) => {
           </div>
         </div>
         <div className="d-grid gap-2">
-          <Link to={`booking-page/${property.id}`}>
+          <Link to={`/booking-page/${property.id}`}>
             <button className="btn btn-primary">Book Now</button>
           </Link>
         </div>

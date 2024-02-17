@@ -54,13 +54,13 @@
 
 .account-details-label {
   color: #CCCCCC;
-  font-size: 16px;
+  font-size: 25px;
   margin-right: 10px;
 }
 
 .account-details-value {
   color: #FFFFFF;
-  font-size: 16px;
+  font-size: 20pxpx;
 }
 
 .account-details-form-container {
@@ -89,8 +89,8 @@
   font-size: 16px;
 }
 
-.account-details-form-container button {
-  background-color: #3E92CC;
+.save{
+  background-color: green;
   border: none;
   color: #FFFFFF;
   padding: 8px 16px;
@@ -99,6 +99,22 @@
   transition: all 0.3s ease;
 }
 
-.account-details-form-container button:hover {
+.save:hover{
   background-color: #306D9E;
 }
+
+.cancel{
+  background-color: red;
+  border: none;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel:hover{
+  background-color: #306D9E;
+}
+
+

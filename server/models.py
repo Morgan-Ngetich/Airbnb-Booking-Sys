@@ -13,8 +13,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
-    password_hash = db.Column(db.String, nullable=False)
-    role = db.Column(db.String, nullable=False)
+    password_hash = db.Column(db.String, nullable=False) 
+    role = db.Column(db.String, nullable=True, default='user')   
     profile_picture = db.Column(db.String)
 
     @validates('username', 'email', 'password_hash')
@@ -34,6 +34,14 @@ class User(db.Model, UserMixin):
     def verify_password(self, plaintext_password):
         return bcrypt.checkpw(plaintext_password.encode('utf-8'), self.password_hash)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'role': self.role,
+            'profile_picture': self.profile_picture
+        }
 
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta:

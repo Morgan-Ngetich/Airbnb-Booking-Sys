@@ -130,10 +130,12 @@
   top: 10px;
   /* right: 10px; */
   background: none;
+  background-color: orange;
   border: none;
   cursor: pointer;
   font-size: 20px;
   color: black;
+  max-width: 200px;
 }
 
 .close-button:hover {
@@ -147,5 +149,12 @@
 .homepage-card .card  {
   width: 500px;
   margin-right: 10px;
+  
+}
+
+.saved-property {
+  z-index: 1;
+  background-color: transparent;
+  
   
 }

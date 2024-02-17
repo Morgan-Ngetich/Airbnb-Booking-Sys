@@ -14,6 +14,7 @@ flask-wtf = "*"
 bcrypt = "*"
 marshmallow-sqlalchemy = "*"
 make-response = "*"
+email-validator = "*"
 
 [dev-packages]
 

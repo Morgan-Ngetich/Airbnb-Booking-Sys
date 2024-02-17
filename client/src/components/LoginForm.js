@@ -1,59 +1,69 @@
 import React, { useState } from 'react';
-import '../css/LoginForm.css';
 import { RiLockPasswordFill, RiMailFill } from 'react-icons/ri';
 import { Link, useNavigate } from 'react-router-dom';
+import '../css/LoginForm.css';
+import useCsrf from './hooks';
 
-const LoginForm = () => {
-  const navigate = useNavigate(); // Use useNavigate for navigation
+
+const LoginForm = ({ onLogin }) => {
+  const csrfToken = useCsrf();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [errors, setErrors] = useState({});
+  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: '' });
   };
 
-  const handleLogin = async (formData) => {
-    try {
-      const response = await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      if (!response.ok) {
-        throw new Error('Failed to log in');
-      }
-      // Assuming the server returns a success message or user data upon successful login
-      const data = await response.json();
-      console.log('Login successful:', data);
-      // Redirect the user to the homepage upon successful login
-      setTimeout(() => {
-        alert('Login Suceessful. Welcome!');
-        navigate('/');
-      }, 2000); // Redirect after 2 seconds
-    } catch (error) {
-      console.error('Login error:', error.message);
-      // Display an alert with the error message
-      setTimeout(() => {
-        alert('Login failed. Please try again.');
-      }, 2000); // Display alert after 2 seconds
-    }
-  };
+  console.log('Form Data:', formData);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const validationErrors = validateFormData(formData);
-    if (Object.keys(validationErrors).length === 0) {
-      // Form is valid, call the login function
-      handleLogin(formData);
-    } else {
-      setErrors(validationErrors);
-    }
+
+
+    const form = new FormData();
+    form.append('email', formData.email);
+    form.append('password', formData.password);
+   
+    fetch("/login", {
+      method: "POST",
+      headers: {
+        // "Content-Type": "application/json",
+        'X-CSRFToken': csrfToken
+      },
+      body: form,
+    }).then((r) => {
+      if (r.ok) {
+        return r.json().then((user) => {
+          onLogin(user);
+          setSuccess('Login successful! Redirecting to homepage...');
+          setTimeout(() => {
+            setSuccess('');
+            navigate('/');
+          }, 2000);
+        });
+      } else {
+        return r.json().then((err) => {
+          if (err && err.error === 'Invalid email or password') {
+            setErrors({ general: 'Invalid email or password' });
+          } else {
+            setErrors(err.errors || { general: err.message });
+          }
+        });
+      }
+    }).catch((error) => {
+      console.error('Login error:', error);
+      alert('Login failed. Please try again.');
+    });
   };
+
+
 
   const validateFormData = (data) => {
     let errors = {};
@@ -67,13 +77,18 @@ const LoginForm = () => {
     }
     return errors;
   };
-
+  
   return (
     <div className="login-form-container">
       <div className="sign-image">
         <h1>Welcome</h1>
         <img src="https://canvas-generations-v1.s3.us-west-2.amazonaws.com/174667bf-d79f-46a0-8997-fcee0a0ef0d7.png" alt="Welcome-sign-img" />
       </div>
+      {errors.general && (
+        <div className="alert error">          
+          <p>{errors.general}</p>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="login-form">
         <h2>Login</h2>
         <RiMailFill />

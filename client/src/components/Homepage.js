@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GiTreehouse } from "react-icons/gi";
-import { FaBed } from "react-icons/fa";
 import { GiIsland } from "react-icons/gi";
 import { GiSpookyHouse } from "react-icons/gi";
-import { FaRegSnowflake } from "react-icons/fa";
+import { FaRegSnowflake, FaHome, FaBed  } from "react-icons/fa";
 import { LuTent } from "react-icons/lu";
 import { GiFamilyHouse } from "react-icons/gi";
 import { IoGrid } from "react-icons/io5";
@@ -15,8 +14,10 @@ const Homepage = () => {
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
   const [selectedIcon, setSelectedIcon] = useState(null);
-  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [selectedProperty, setSelectedProperty] = useState(null);  // State to track the selected property.
   const popupRef = useRef(null);
+
+  
 
   useEffect(() => {
     fetch('/listings')
@@ -36,14 +37,17 @@ const Homepage = () => {
     }
   }, [selectedIcon, properties]);
 
+
   const handleIconClick = (icon) => {
     setSelectedIcon(icon);
   };
+
 
   const handleAllClick = () => {
     setSelectedIcon(null);
   };
 
+  
   const handleDescriptionClick = property => {
     setSelectedProperty(property);
   };
@@ -127,7 +131,7 @@ const Homepage = () => {
       {selectedProperty && (
         <div className="popup" ref={popupRef}>
           <div className="popup-content">
-            <button className="close-button" onClick={handleClosePopup}>X</button>
+            <button className="close-button" onClick={handleClosePopup}> <FaHome /> </button>
             <div className="homepage-card">
               <HomepageCard property={selectedProperty}/>
             </div>

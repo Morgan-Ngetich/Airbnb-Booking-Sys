@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUser, FaBell, FaBookmark, FaClipboardList } from 'react-icons/fa';
 import AccountDetails from './AccountDetails';
 import NotificationCard from './NotificationCard';
@@ -7,8 +7,12 @@ import SmallCard from './SmallCard';
 
 import '../css/Dashboard.css';
 
-const Dashboard = () => {
+
+
+const Dashboard = ({ user, csrfToken }) => {
   const [selectedTab, setSelectedTab] = useState('account');
+  const [error, setError] = useState(false);
+
 
   return (
     <div className="dashboard-container">
@@ -50,17 +54,17 @@ const Dashboard = () => {
       </div>
       <div className="content">
         <div className={`section ${selectedTab === 'account' ? 'active' : ''}`}>
-          <AccountDetails />
+          <AccountDetails id={user.id} csrf={csrfToken}/>
         </div>
         <div className={`section ${selectedTab === 'notifications' ? 'active' : ''}`}>
-          <NotificationCard />
+          <NotificationCard id={user.id} csrf={csrfToken}/>
         </div>
         <div className={`section ${selectedTab === 'saved' ? 'active' : ''}`}>
-          <h2 className="section-title">Saved Listings</h2>
+          <h2 className="section-title">Yet to implement Saved Listings</h2>
           {/* Add content for Saved Listings */}
         </div>
         <div className={`section ${selectedTab === 'bookings' ? 'active' : ''}`}>
-          <BookingDetail />
+          <BookingDetail id={user.id} csrf={csrfToken}/>
         </div>
       </div>
     </div>

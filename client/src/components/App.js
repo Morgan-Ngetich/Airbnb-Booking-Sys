@@ -1,70 +1,78 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Homepage from './Homepage';
-import PropertyListings from './PropertyListings';
-import PropertyDetails from './PropertyDetails';
 import BookingForm from './BookingForm';
 import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import Dashboard from './Dashboard';
-import BookingPage from './BookingPage'
-// import AccountDetails from './AccountDetails'
-
-import { MessagingInterface, Notifications } from './Messaging';
+import BookingPage from './BookingPage';
 import { ReviewList, LeaveReview } from './Review';
 import Footer from './Footer';
 
-// Separate layout component without Navbar and Footer
+import useCsrf from './hooks';
+
 const AuthLayout = ({ children }) => {
   return <div>{children}</div>;
 };
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [errors, setErrors] = useState({});
+  const csrfToken = useCsrf();
+
+  useEffect(() => {
+    fetch("/check_session").then((response) => {
+      if (response.ok) {
+        response.json().then((user) => setUser(user));
+      } else {
+        response.json().then((err) => {
+          if (err && err.error === 'The CSRF token has expired.') {
+            setErrors({ general: 'The CSRF token has expired. Please refresh the page' });
+          } else {
+            console.error('Error checking session:', err);
+            alert('Failed to check session. Please refresh the page.');
+          }
+        });
+      }
+    });
+  }, []);
+
+
+  function handleLogin(user) {
+    setUser(user);
+  }
+
+  function handleLogout() {
+    setUser(null);
+  }
+
   return (
     <Router>
       <div>
         <Routes>
-          {/* Homepage with Navbar and Footer */}
-          <Route
-            path="/"
-            element={
-              <div>
-                <Navbar />
-                <Homepage />
-                <Footer />
-              </div>
-            }
+          {/* Routes that do not require authentication */}
+          <Route path="/" element={
+            <div>
+              <Navbar user={user} onLogout={handleLogout}/>
+              <Homepage user={user} csrfToken={csrfToken}/>
+              <Footer />
+            </div>}
           />
-          {/* Other routes with Navbar and Footer */}
-          <Route path="/listings" element={<PropertyListings />} />
-          <Route path="/property/:id" element={<PropertyDetails />} />
-          <Route path="/booking/:id" element={<BookingForm />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/messaging" element={<MessagingInterface />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/reviews" element={<ReviewList />} />
-          <Route path="/leave-review" element={<LeaveReview />} />
-          <Route path="booking-page/:property_id" element={<BookingPage />} />
+          
+          {/* <Route path="/booking/:id" element={<BookingForm user={user}/>} /> */}
+          <Route path="/booking-page/:property_id/" element={<BookingPage user={user} csrfToken={csrfToken}/>} />
+          <Route path="/login" element={<AuthLayout><LoginForm onLogin={handleLogin}/></AuthLayout>} />
+          <Route path="/signup" element={<AuthLayout><SignUpForm onLogin={handleLogin}/></AuthLayout>} />
 
-          {/* <Route path="/account-details/:id" element={<AccountDetails />} /> */}
-          {/* Login and SignUp routes without Navbar and Footer */}
-          <Route
-            path="/login"
-            element={
-              <AuthLayout>
-                <LoginForm />
-              </AuthLayout>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <AuthLayout>
-                <SignUpForm />
-              </AuthLayout>
-            }
-          />
+          {/* Routes that require authentication */}
+          {user ? (
+            <>
+              <Route path="/dashboard" element={<Dashboard user={user} csrfToken={csrfToken}/>} />
+              <Route path="/reviews" element={<ReviewList />} />
+              <Route path="/leave-review" element={<LeaveReview />} />
+            </>
+          ) : null}
         </Routes>
       </div>
     </Router>

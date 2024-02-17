@@ -5,76 +5,75 @@ import { AiFillFire } from 'react-icons/ai';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { BiBath } from 'react-icons/bi';
 import { IoIosBed } from 'react-icons/io';
-import { Button, Container, Row, Col, Form } from 'react-bootstrap';
+import { FaRegUserCircle, FaTrashAlt } from "react-icons/fa";
+
+import { Button, Container, Row, Col, Form, Modal} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/BookingPage.css';
 
-const BookingPage = () => {
-  const { property_id } = useParams();
+const BookingPage = ({ user, csrfToken }) => {
   const navigate = useNavigate();
+
+  const { property_id } = useParams();
   const [property, setProperty] = useState(null);
-  const [rating, setRating] = useState(0);
+  const [num_guests, setNumGuests] = useState(1);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [status, setStatus] = useState('Reserved');
+  const [showModal, setShowModal] = useState(false);
+
+  const [rating, setRating] = useState(1);
   const [review, setReview] = useState('');
   const [reviews, setReviews] = useState([]);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track user authentication status
 
-  useEffect(() => {
-    // Fetch property details
-    fetch(`/listings/${property_id}`)
-      .then(response => response.json())
-      .then(data => setProperty(data))
-      .catch(error => console.error('Error fetching property data:', error));
+  useEffect(() => {    
+      // Fetch property details
+      fetch(`/listings/${property_id}`)
+        .then(response => response.json())
+        .then(data => setProperty(data))
+        .catch(error => console.error('Error fetching property data:', error));
 
-    // Fetch reviews
-    fetch(`/reviews/${property_id}`)
-      .then(response => response.json())
-      .then(data => {
-        if (Array.isArray(data)) {
+      // Fetch reviews
+      fetch(`/reviews?property_id=${property_id}`)
+        .then(response => response.json())
+        .then(data => {
+          if (Array.isArray(data)) {
           setReviews(data);
-        } else {
-          console.error('Invalid data format for reviews:', data);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching reviews:', error);
-      });
-
-    // Check user authentication status
-    fetch('/checksession')
-      .then(response => {
-        if (response.ok) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      })
-      .catch(error => {
-        console.error('Error checking session:', error);
-        setIsAuthenticated(false);
-      });
+          } else {
+            console.error('Invalid data format for reviews:', data);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching reviews:', error);
+        });
+    
   }, [property_id]);
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
-    if (!isAuthenticated) {
+    // if (!isAuthenticated) {
       // If user is not authenticated, redirect to signup page
-      navigate('/signup');
-      return;
-    }
-    postReview();
+      // navigate('/signup');
+      // return;
+    // }
+    postReview();    
+    window.location.reload();
   };
 
   const postReview = () => {
     const newReview = {
+      property_id: property_id,
       rating: rating,
       comment: review
     };
-
+  
     // Simulate posting review to server and receiving response
     fetch(`/reviews/${property_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
       },
       body: JSON.stringify(newReview),
     })
@@ -85,23 +84,93 @@ const BookingPage = () => {
       return response.json();
     })
     .then(data => {
-      setReviews([...reviews, data]);
-      setRating(0);
-      setReview('');
+      // Fetch guest username for the new review
+      fetch(`/user/${data.guest_id}`)
+        .then(response => response.json())
+        .then(userData => {
+          // Update the reviews state with the new review and guest username
+          setReviews([...reviews, { ...data, guest_username: userData.username }]);
+          setRating(0);
+          setReview('');          
+        })
+        .catch(error => {
+          console.error('Error fetching guest username:', error);
+        });
     })
     .catch(error => {
       console.error('Error posting review:', error);
       // Handle error, e.g., display an error message to the user
     });
   };
+  
+  const handleDeleteReview = (reviewId) => {
+    fetch(`/reviews/${reviewId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to delete review');
+      }
+      // Filter out the deleted review from the reviews state
+      setReviews(reviews.filter(review => review.id !== reviewId));
+    })
+    .catch(error => {
+      console.error('Error deleting review:', error);
+      // Handle error, e.g., display an error message to the user
+    });
+  };
+  
 
   const handleReserveNow = () => {
-    alert("Success! Your booking has been reserved. Get ready for an unforgettable experience!");
+    // Calculate total price based on number of guests and property's price per night
+    const totalPrice = num_guests * property.price;
+    const bookingDetails = {
+      guest_id: user.id,
+      property_id: property_id,
+      num_guests: num_guests,     
+      start_date: startDate, 
+      end_date: endDate,
+      total_price: totalPrice, // Assuming you have totalPrice state variable
+      status: status
+    };  
+    // Save booking details to the server or local storage
+    saveBooking(bookingDetails); 
+    setShowModal(false);   
+  };
+
+  const saveBooking = (bookingDetails) => {
+    // Save booking details to the server
+    fetch(`/bookings/${user.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify(bookingDetails),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to reserve booking');
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert("Success! Your booking has been reserved. Get ready for an unforgettable experience!\nYou can view the booking in the dashboard.");
+      // Redirect to dashboard or update UI as needed
+    })
+    .catch(error => {
+      console.error('Error reserving booking:', error);
+      // Handle error, e.g., display an error message to the user
+    });
   };
 
   return (
     <div className="booking-page">
-      <Container>
+      <Container> 
         <Row>
           <Col lg={8} md={12}>
             <div className="main-card futuristic-animation">
@@ -114,10 +183,10 @@ const BookingPage = () => {
                       {property.description}
                     </p>
                     <div className="rating">
-                      <FaStar className="star-icon" /> {property.rating} ({property.reviews} Reviews)
+                      <FaStar className="star-icon" /> {rating} ({property.reviews} Reviews)
                     </div>
                     <div className="host-info">
-                      <BsFillPersonFill className="person-icon" /> Hosted by {property.host_id.username} {property.superhost && <span className="superhost-badge futuristic-badge">Superhost</span>}
+                      <BsFillPersonFill className="person-icon" /> Hosted by <span style={{color: 'orange'}}>{property.host_username}</span> {property.superhost && <span className="superhost-badge futuristic-badge">Superhost</span>}
                     </div>
                     <div className="location-info">
                       <FaMapMarkerAlt className="location-icon" /> Great location - {property.locationRating}% of recent guests gave the location a 5-star rating.
@@ -136,21 +205,30 @@ const BookingPage = () => {
                     </div>
                     <div className="reviews futuristic-animation">
                       <h5>Guest Reviews</h5>
-                      {reviews.map((review, index) => (
-                        <div key={index} className="review-card">
-                          <div className="card-body">
-                            <div className="review-header">
-                              <div className="rating-stars">
-                                {[...Array(5)].map((_, i) => (
-                                  <span key={i} className={`star ${i < review.rating ? 'filled' : ''}`}>&#9733;</span>
-                                ))}
+                      {reviews.length > 0 ? (
+                        reviews.map((review, index) => (
+                          <div key={index} className="review-card">
+                            <div className="card-body">
+                              <div className="review-header">
+                                <div style={{fontWeight: 'bold', color: 'orange',fontSize: '15px'}}>
+                                  <FaRegUserCircle style={{fontSize: '30px'}}/>
+                                  {review.guest_username ? review.guest_username : 'Guest'}
+                                </div>
+                                <div className="rating-stars">
+                                  {[...Array(5)].map((_, i) => (
+                                    <span key={i} className={`star ${i < review.rating ? 'filled' : ''}`}>&#9733;</span>
+                                  ))}
+                                </div>
                               </div>
+                              <p>{review.comment}</p>
+                              <p>{review.created_at}</p>
+                              <Button variant="danger" style={{ marginLeft: 'auto', maxWidth: '50px' }} onClick={() => handleDeleteReview(review.id)}><FaTrashAlt style={{fontSize: "20px"}}/></Button>
                             </div>
-                            <p>{review.comment}</p>
-                            <p>{review.created_at}</p>
                           </div>
-                        </div>
-                      ))}
+                        ))
+                      ) : (
+                        <p style={{color: 'red', fontSize: '26px'}}>No reviews yet</p>
+                      )}
                       <Form>
                         <Form.Group controlId="rating">
                           <Form.Label>Rate your experience:</Form.Label>
@@ -178,9 +256,9 @@ const BookingPage = () => {
                         <Button variant="primary" type="submit" onClick={handleReviewSubmit}>
                           Submit Review
                         </Button>
-                        {!isAuthenticated && (
+                        {/* {!isAuthenticated && (
                           <p className="auth-message futuristic-text">You need to <Link to="/signup" className="futuristic-link">sign up</Link> to leave a review.</p>
-                        )}
+                        )} */}
                       </Form>
                     </div>
                   </>
@@ -198,12 +276,60 @@ const BookingPage = () => {
                 <p>
                   {property ? `Price: $${property.price} per night` : 'Loading...'}
                 </p>
-                <Button variant="success" onClick={handleReserveNow} className="futuristic-button">Reserve Now</Button>
+                <Button variant="success" onClick={() => setShowModal(true)} className="futuristic-button">Reserve Now</Button>
               </div>
             </div>
           </Col>
         </Row>
       </Container>
+
+      {/* Reservation modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Reserve Now</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="numGuests">
+              <Form.Label>Number of Guests:</Form.Label>
+              <Form.Control
+                type="number"
+                value={num_guests}
+                onChange={(e) => setNumGuests(parseInt(e.target.value))}
+              />
+            </Form.Group>
+            <Form.Group controlId="startDate">
+              <Form.Label>Start Date:</Form.Label>
+              <Form.Control
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="endDate">
+              <Form.Label>End Date:</Form.Label>
+              <Form.Control
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="totalPrice">
+              <Form.Label>Total Price:</Form.Label>
+              <Form.Control
+                type="text"
+                value={`$${num_guests * (property ? property.price : 0)}`}
+                readOnly
+              />
+            </Form.Group>            
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
+          <Button variant="primary" onClick={handleReserveNow}>Complete Book</Button>
+        </Modal.Footer>
+      </Modal>
+      
     </div>
   );
 }
