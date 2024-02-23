@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { FaUser, FaBell, FaBookmark, FaClipboardList } from 'react-icons/fa';
 import AccountDetails from './AccountDetails';
 import NotificationCard from './NotificationCard';
@@ -11,7 +11,7 @@ import '../css/Dashboard.css';
 
 const Dashboard = ({ user, csrfToken }) => {
   const [selectedTab, setSelectedTab] = useState('account');
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
 
 
   return (

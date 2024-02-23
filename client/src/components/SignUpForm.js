@@ -41,10 +41,10 @@ const SignupForm = ({ onLogin }) => {
       if (r.ok) {
         return r.json().then((user) => {
           onLogin(user);
-          setSuccess('Login successful! Redirecting to homepage...');
+          setSuccess('Login successful! Redirecting to loginPage...');
           setTimeout(() => {
             setSuccess('');
-            navigate('/');
+            navigate('/login');
           }, 2000);
         });
       } else {
