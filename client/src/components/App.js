@@ -7,7 +7,6 @@ import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
 import Dashboard from './Dashboard';
 import BookingPage from './BookingPage';
-import { ReviewList, LeaveReview } from './Review';
 import Footer from './Footer';
 
 import useCsrf from './hooks';
@@ -23,7 +22,7 @@ function App() {
   const csrfToken = useCsrf();
 
   useEffect(() => {
-    fetch("/check_session").then((response) => {
+    fetch(`${BASE_URL}/check_session`).then((response) => {
       if (response.ok) {
         response.json().then((user) => setUser(user));
       } else {
@@ -70,8 +69,6 @@ function App() {
           {user ? (
             <>
               <Route path="/dashboard" element={<Dashboard user={user} csrfToken={csrfToken}/>} />
-              <Route path="/reviews" element={<ReviewList />} />
-              <Route path="/leave-review" element={<LeaveReview />} />
             </>
           ) : null}
         </Routes>
