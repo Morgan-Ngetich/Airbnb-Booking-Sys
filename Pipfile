@@ -7,6 +7,14 @@ name = "pypi"
 flask = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+flask-restful = "*"
+faker = "*"
+flask-cors = "*"
+flask-wtf = "*"
+bcrypt = "*"
+marshmallow-sqlalchemy = "*"
+make-response = "*"
+email-validator = "*"
 
 [dev-packages]
 

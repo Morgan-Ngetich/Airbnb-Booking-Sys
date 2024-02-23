@@ -1,0 +1,138 @@
+.notification-container {
+  padding: 20px;
+}
+
+.notification-card {
+  background-color: #0F0F0F;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bell-icon {
+  color: #FFFFFF;
+  font-size: 40px;
+}
+
+.mark-as-read {
+  background-color: #3E92CC;
+  max-width: 200px;
+  border: none;
+  color: #FFFFFF;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.mark-as-read:hover {
+  background-color: #306D9E;
+}
+
+.card-body {
+  margin-top: 20px;
+}
+
+.notifications {
+  transition: all 0.3s ease;
+}
+
+.notification {
+  background-color: #1A1A1A;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.notification .message {
+  color: #FFFFFF;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.notification .timestamp {
+  color: #CCCCCC;
+  font-size: 12px;
+}
+
+.no-notifications {
+  padding: 10px;
+  text-align: center;
+  color: #999;
+  font-size: 20px;
+}
+
+.delete-btn {
+  max-width: 150px;
+  margin-right: 0;
+  align-items: right;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .bell-icon {
+    font-size: 30px;
+  }
+
+  .mark-as-read {
+    max-width: 150px;
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .notification .message {
+    font-size: 14px;
+  }
+
+  .notification .timestamp {
+    font-size: 10px;
+  }
+
+  .no-notifications {
+    font-size: 16px;
+  }
+
+  .delete-btn {
+    max-width: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .bell-icon {
+    font-size: 24px;
+  }
+
+  .mark-as-read {
+    max-width: 120px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  .notification .message {
+    font-size: 12px;
+  }
+
+  .notification .timestamp {
+    font-size: 8px;
+  }
+
+  .no-notifications {
+    font-size: 14px;
+  }
+
+  .delete-btn {
+    max-width: 80px;
+  }
+}

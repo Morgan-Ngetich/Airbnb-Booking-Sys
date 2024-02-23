@@ -1,19 +1,82 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FaAirbnb, FaHome, FaBell, FaBook, FaUser } from 'react-icons/fa';
+import { MdDashboard } from "react-icons/md";
+import { FiMenu } from "react-icons/fi";
+import { CgProfile } from "react-icons/cg";
+import { CiLogout } from "react-icons/ci";
+import { Link } from 'react-router-dom';
+import Calendar from './Calendar';
+import CalendarComponent from './CalendarComponent';
+import 'react-datepicker/dist/react-datepicker.css';
+import '../css/Navbar.css';
 
 const Navbar = () => {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showCheckInCalendar, setShowCheckInCalendar] = useState(false);
+  const [showCheckOutCalendar, setShowCheckOutCalendar] = useState(false);
+
+  const toggleDropdown = () => { 
+    setShowDropdown(!showDropdown);
+  };
+
+  const toggleCheckInCalendar = () => {
+    setShowCheckInCalendar(!showCheckInCalendar);
+  };
+
+  const toggleCheckOutCalendar = () => {
+    setShowCheckOutCalendar(!showCheckOutCalendar);
+  };
+
+  const handleCheckInSelectDate = (date) => {
+    console.log('Selected Check-In date:', date);
+    toggleCheckInCalendar(); // Close calendar after selecting date
+  };
+
+  const handleCheckOutSelectDate = (date) => {
+    console.log('Selected Check-Out date:', date);
+    toggleCheckOutCalendar(); // Close calendar after selecting date
+  };
+
   return (
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/listings">Listings</a></li>
-        {/* Add more navigation links */}
-      </ul>
+    <nav className="navbar">
+      <div className="navbar-container">
+        <div className="navbar-left">
+          <FaAirbnb className="navbar-logo" />
+          <p className='airbnb-p'>airbnb</p>
+        </div>
+        
+        <div className="navbar-center">
+          <div className="navbar-links-container">
+            <div className="navbar-link">
+              {showCheckInCalendar ? 
+                <CalendarComponent label="Check-in" onClick={toggleCheckInCalendar} /> : 
+                <CalendarComponent label="Check-out" onClick={toggleCheckOutCalendar} />
+              }
+              {showCheckInCalendar ? <Calendar onSelectDate={handleCheckInSelectDate} /> : null}
+              {showCheckOutCalendar ? <Calendar onSelectDate={handleCheckOutSelectDate} /> : null}
+            </div>
+          </div>
+        </div>
 
-      <input type="text" placeholder="Search listings" />
-
-      <div>
-        <button>Login</button>
-        <button>Sign Up</button>
+        <div className="navbar-right">
+          <Link to='/login'><button className='login-button'>Login</button></Link> <span className='separator'> / </span>
+          <Link to='/signup'><button className='signup-button'>Sign Up</button></Link>
+          <div className="user-profile" onClick={toggleDropdown}>            
+            <FiMenu className='menu-icon' />
+            <CgProfile className="profile-icon" />
+            
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <Link to="/"><FaHome /> Home</Link>
+                <Link to="/dashboard"><MdDashboard /> Dashboard</Link>
+                <Link to="/notifications"><FaBell /> Notifications</Link>
+                <Link to="/booking/:id"><FaBook /> Bookings</Link>
+                <Link to="/Account"><FaUser /> Account</Link>
+                <Link to="/logout"><CiLogout className='log-out-icon'/> Logout</Link>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </nav>
   );
