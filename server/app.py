@@ -16,6 +16,7 @@ from models import db, User, PropertyListing, Booking, Review, Notification
 from flask_migrate import Migrate
 
 def create_app():
+    
 
     app = Flask(
         __name__,
