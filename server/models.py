@@ -57,6 +57,8 @@ class PropertyListing(db.Model):
     location = db.Column(db.String, nullable=False)
     images = db.Column(db.String, nullable=False)
     host_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    check_in_date = db.Column(db.Date, nullable=False)
+    check_out_date = db.Column(db.Date, nullable=False)
 
     host = db.relationship('User', backref=db.backref('property_listings', lazy=True))
 

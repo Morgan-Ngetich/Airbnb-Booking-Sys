@@ -31,13 +31,16 @@ def create_app():
 
     # Initialize SQLAlchemy
     db.init_app(app)
-    migrate = Migrate(app, db)
+    migrate = Migrate()
+    migrate.init_app(app, db)
 
     CORS(app, supports_credentials=True)
     api = Api(app)
 
     # Initialize CSRF protection
+    # The following variable is intentionally not used, as it is used for CSRF protection
     csrf = CSRFProtect(app)
+    
 
     # Configure session to use cookies
     app.config['SESSION_COOKIE_HTTPONLY'] = True
