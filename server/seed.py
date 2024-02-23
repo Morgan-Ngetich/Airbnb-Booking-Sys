@@ -1,3 +1,5 @@
+import os
+
 import random
 import datetime
 from faker import Faker
@@ -7,7 +9,7 @@ from models import User, PropertyListing, Booking, Review, Notification
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
