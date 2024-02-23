@@ -9,6 +9,7 @@ import { IoGrid } from "react-icons/io5";
 import HomepageCard from './HomepageCard';
 import '../css/Homepage.css';
 import '../css/HomepageCard.css';
+import { BASE_URL } from './config.js';
 
 const Homepage = () => {
   const [properties, setProperties] = useState([]);

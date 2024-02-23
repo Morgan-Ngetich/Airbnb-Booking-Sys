@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../css/SignupForm.css';
 
 import useCsrf from './hooks';
+import { BASE_URL } from './config.js';
 
 const SignupForm = ({ onLogin }) => {
   const csrfToken = useCsrf();

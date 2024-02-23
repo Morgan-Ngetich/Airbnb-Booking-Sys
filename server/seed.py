@@ -1,19 +1,8 @@
-import os
-
+from faker import Faker
+from models import User, PropertyListing, Booking, Review, Notification
+from app import app, db
 import random
 import datetime
-from faker import Faker
-from flask import Flask
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
-from models import User, PropertyListing, Booking, Review, Notification
-
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
 
 fake = Faker()
 

@@ -3,6 +3,7 @@ import { RiLockPasswordFill, RiMailFill } from 'react-icons/ri';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/LoginForm.css';
 import useCsrf from './hooks';
+import { BASE_URL } from './config.js';
 
 
 const LoginForm = ({ onLogin }) => {
