@@ -34,8 +34,10 @@ def generate_property_listings(num_listings, num_users):
                 description=fake.text(),
                 price=random.uniform(50, 1000),
                 location=fake.address(),
-                images=fake.image_url(),
-                host_id=random.randint(1, num_users)
+                images=fake.image_url() + "/house.jpg",
+                host_id=random.randint(1, num_users),
+                check_in_date=fake.date_between(start_date='-30d', end_date='+30d'),
+                check_out_date=fake.date_between(start_date='+31d', end_date='+60d')
             )
             db.session.add(listing)
         db.session.commit()
@@ -79,11 +81,11 @@ def generate_notifications(num_notifications, num_users):
         db.session.commit()
 
 if __name__ == '__main__':
-    num_users = 10
-    num_listings = 10
+    num_users = 30
+    num_listings = 40
     num_bookings = 10
     num_reviews = 5
-    num_notifications = 5
+    num_notifications = 9
     
     generate_users(num_users)
     generate_property_listings(num_listings, num_users)
