@@ -1,3 +1,5 @@
+import os
+
 import random
 import datetime
 from faker import Faker
@@ -8,7 +10,7 @@ from models import User, PropertyListing, Booking, Review, Notification
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -72,7 +74,7 @@ def generate_property_listings(num_listings, num_users):
                 description=fake.text(),
                 price=random.uniform(50, 1000),
                 location=fake.address(),
-                images = ','.join([random.choice(house_image_urls) for _ in range(random.randint(1, 5))]),
+                images=','.join([random.choice(house_image_urls) for _ in range(random.randint(1, 5))]),
                 host_id=random.randint(1, num_users),
                 check_in_date=fake.date_between(start_date='today', end_date='+30d'),
                 check_out_date=fake.date_between(start_date='+31d', end_date='+60d')
