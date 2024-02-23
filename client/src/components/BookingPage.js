@@ -10,6 +10,7 @@ import { FaRegUserCircle, FaTrashAlt } from "react-icons/fa";
 import { Button, Container, Row, Col, Form, Modal} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/BookingPage.css';
+import { BASE_URL } from './config.js';
 
 const BookingPage = ({ user, csrfToken }) => {
   const navigate = useNavigate();

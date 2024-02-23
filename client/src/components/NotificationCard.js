@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../css/NotificationCard.css';
 import { Button, Modal } from 'react-bootstrap';
 import { BiBell } from "react-icons/bi";
+import { BASE_URL } from './config.js';
 
 function NotificationCard({ id, csrf }) {
   const [notifications, setNotifications] = useState([]);

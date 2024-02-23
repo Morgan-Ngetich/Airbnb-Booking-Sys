@@ -7,6 +7,7 @@ import { MdMapsHomeWork } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
 import { PiCurrencyDollarSimpleDuotone } from "react-icons/pi";
+import { BASE_URL } from './config.js';
 
 
 function BookingDetail({ id, csrf }) {

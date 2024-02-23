@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/AccountDetails.css";
 import { FaUser, FaEdit } from "react-icons/fa";
+import { BASE_URL } from './config.js';
 
 
 

@@ -11,6 +11,7 @@ import { ReviewList, LeaveReview } from './Review';
 import Footer from './Footer';
 
 import useCsrf from './hooks';
+import { BASE_URL } from './config.js';
 
 const AuthLayout = ({ children }) => {
   return <div>{children}</div>;
