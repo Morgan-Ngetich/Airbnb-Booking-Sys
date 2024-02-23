@@ -5,6 +5,10 @@ import datetime
 from faker import Faker
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin
+
 from models import User, PropertyListing, Booking, Review, Notification
 
 
@@ -14,6 +18,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 fake = Faker()
+
+def scrape_house_image_urls(url, num_images):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    img_tags = soup.find_all('img')
+    image_urls = [urljoin(url, img.get('src')) for img in img_tags]
+    return random.sample(image_urls, min(num_images, len(image_urls)))
+
 
 def generate_users(num_users):
     with app.app_context():
@@ -29,14 +41,21 @@ def generate_users(num_users):
         db.session.commit()
 
 def generate_property_listings(num_listings, num_users):
+    house_website_url = 'https://www.pinterest.com/search/pins/?q=houses&rs=typed'
+    
     with app.app_context():
         for _ in range(num_listings):
+            image_urls = scrape_house_image_urls(house_website_url, random.randint(1, 5))
+            if not image_urls:
+                # Use a default house image URL if no images are found
+                image_urls = ['https://i.pinimg.com/236x/d5/24/c9/d524c987a9b00dac65d845fac0f69b4f.jpg']
+
             listing = PropertyListing(
                 title=fake.catch_phrase(),
                 description=fake.text(),
                 price=random.uniform(50, 1000),
                 location=fake.address(),
-                images=fake.image_url() + "/house.jpg",
+                images=image_urls,
                 host_id=random.randint(1, num_users),
                 check_in_date=fake.date_between(start_date='-30d', end_date='+30d'),
                 check_out_date=fake.date_between(start_date='+31d', end_date='+60d')
