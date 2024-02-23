@@ -13,7 +13,7 @@ function NotificationCard({ id, csrf }) {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch(`/notifications`);
+        const response = await fetch(`${BASE_URL}/notifications`);
         if (!response.ok) {
           throw new Error('Failed to fetch notifications');
         }
@@ -32,7 +32,7 @@ function NotificationCard({ id, csrf }) {
 
   const handleDelete = async (notificationId) => {
     try {
-      const response = await fetch(`/notifications/${notificationId}`, {
+      const response = await fetch(`${BASE_URL}/notifications/${notificationId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

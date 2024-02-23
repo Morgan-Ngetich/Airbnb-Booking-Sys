@@ -31,7 +31,7 @@ const SignupForm = ({ onLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch("/signup", {
+    fetch(`${BASE_URL}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

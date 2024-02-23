@@ -21,7 +21,7 @@ const Homepage = () => {
   
 
   useEffect(() => {
-    fetch('/listings')
+    fetch(`${BASE_URL}/listings`)
       .then(response => response.json())
       .then(data => setProperties(data))
       .catch(error => console.error('Error fetching data:', error));

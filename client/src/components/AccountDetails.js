@@ -14,7 +14,7 @@ const AccountDetails = ({ id, csrf}) => {
   useEffect(() => {
     const fetchAccountDetails = async () => {
       try {
-        const response = await fetch(`/users/${id}`);
+        const response = await fetch(`${BASE_URL}/users/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch account details');
         }
@@ -42,7 +42,7 @@ const AccountDetails = ({ id, csrf}) => {
 
   const handleSubmit = async (updatedDetails) => {
     try {
-      const response = await fetch(`/users/${id}`, {
+      const response = await fetch(`${BASE_URL}/users/${id}`, {
         method: 'PATCH', // Use PATCH method for partial updates
         headers: {
           'Content-Type': 'application/json',

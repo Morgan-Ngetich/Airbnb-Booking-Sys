@@ -32,7 +32,7 @@ const LoginForm = ({ onLogin }) => {
     form.append('email', formData.email);
     form.append('password', formData.password);
    
-    fetch("/login", {
+    fetch(`${BASE_URL}/login`, {
       method: "POST",
       headers: {
         // "Content-Type": "application/json",

@@ -16,7 +16,7 @@ function BookingDetail({ id, csrf }) {
   useEffect(() => {
     const fetchBookingData = async () => {
       try {
-        const response = await fetch(`/bookings?user_id=${id}`);
+        const response = await fetch(`${BASE_URL}/bookings?user_id=${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch booking data');
         }
@@ -33,7 +33,7 @@ function BookingDetail({ id, csrf }) {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/bookings/${id}`, {
+      const response = await fetch(`${BASE_URL}/bookings/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
