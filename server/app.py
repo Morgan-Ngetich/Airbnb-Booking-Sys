@@ -241,6 +241,8 @@ def create_app():
                     'price': float(listing.price),
                     'location': listing.location,
                     'images': listing.images,
+                    'check_in_date':listing.check_in_date,
+                    'check_out_date':listing.check_in_date,
                     'host_username': host_username 
                 })
             
@@ -263,6 +265,8 @@ def create_app():
                 'price': float(listing.price),
                 'location': listing.location,
                 'images': listing.images,
+                'check_in_date':listing.check_in_date,
+                'check_out_date':listing.check_in_date,
                 'host_username': host_username 
             }, 200
 
