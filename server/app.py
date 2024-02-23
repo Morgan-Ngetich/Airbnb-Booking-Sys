@@ -534,7 +534,9 @@ def create_app():
     api.add_resource(NotificationResource, '/notifications')
     api.add_resource(NotificationDetailResource, '/notifications/<int:notification_id>')
 
+    return app
 
 if __name__ == '__main__':
     app = create_app()
+    app.init_app(app)
     app.run(port=5555)
