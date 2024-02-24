@@ -2,7 +2,7 @@
 
 
 ## Project Description
-This project is a full-stack clone of the popular vacation rental online marketplace Airbnb. It allows users to sign up, list their properties for rent, browse available properties, make bookings, leave reviews, and receive notifications. The project includes both frontend and backend components, providing a comprehensive solution for property rental management.
+This project is a full-stack project of a popular vacation rental online marketplace Airbnb. It allows users to sign up, list their properties for rent, browse available properties, make bookings, leave reviews, and receive notifications. The project includes both frontend and backend components, providing a comprehensive solution for property rental management.
 
 ****To view the website click** [https://airbnb-booking-sys-1.onrender.com](https://airbnb-booking-sys-1.onrender.com)**
 
@@ -17,7 +17,7 @@ This project is a full-stack clone of the popular vacation rental online marketp
 8. [License](#license)
 
 ## Introduction
-The Airbnb Clone project aims to replicate the core functionalities of Airbnb, allowing users to search for, book, and list properties for short-term rentals. It provides a user-friendly interface for property owners to manage their listings and for travelers to find and book accommodations.
+The project aims to replicate the core functionalities of Airbnb, allowing users to search for, book, and list properties for short-term rentals. It provides a user-friendly interface for property owners to manage their listings and for travelers to find and book accommodations.
 
 ## How the Project Works
 The project utilizes a Flask backend to handle user authentication, property management, booking processing, review submissions, and notification delivery. The frontend is built with React to provide a responsive and intuitive user interface. The backend and front end communicate through RESTful API endpoints, enabling seamless interaction between the client and server.
