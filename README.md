@@ -29,10 +29,18 @@ git clone git@github.com:Morgan-Ngetich/Airbnb-Booking-Sys.git
 ```
 
 2. Install dependencies for the frontend and backend:
-```cd client```
-```npm install```
-```cd ../server```
-```pip install -r requirements.txt```
+```
+cd client
+```
+```
+npm install
+```
+```
+cd ../server
+```
+```
+pip install -r requirements.txt
+```
 
 4. Set up the database:
 - Create a PostgreSQL database.
