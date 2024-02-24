@@ -20,7 +20,7 @@ To view the website click [https://airbnb-booking-sys-1.onrender.com](https://ai
 The Airbnb Clone project aims to replicate the core functionalities of Airbnb, allowing users to search for, book, and list properties for short-term rentals. It provides a user-friendly interface for property owners to manage their listings and for travelers to find and book accommodations.
 
 ## How the Project Works
-The project utilizes a Flask backend to handle user authentication, property management, booking processing, review submissions, and notification delivery. The frontend is built with React to provide a responsive and intuitive user interface. The backend and frontend communicate through RESTful API endpoints, enabling seamless interaction between the client and server.
+The project utilizes a Flask backend to handle user authentication, property management, booking processing, review submissions, and notification delivery. The frontend is built with React to provide a responsive and intuitive user interface. The backend and front end communicate through RESTful API endpoints, enabling seamless interaction between the client and server.
 
 ## Installation
 1. Clone the repository:
@@ -29,12 +29,12 @@ git clone git@github.com:Morgan-Ngetich/Airbnb-Booking-Sys.git
 ```
 
 2. Install dependencies for the frontend and backend:
--cd client
-- npm install
-- cd ../server
-- pip install -r requirements.txt
+```cd client```
+```npm install```
+```cd ../server```
+```pip install -r requirements.txt```
 
-3. Set up the database:
+4. Set up the database:
 - Create a PostgreSQL database.
 - Configure the database URI in the backend `.env` file.
 - Run the backend server: ```Flask run```
