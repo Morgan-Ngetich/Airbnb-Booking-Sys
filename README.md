@@ -1,4 +1,4 @@
-# Airbnb Clone: A Full-Stack Property Rental Application
+# Airbnb: A Full-Stack Property Rental Application
 
 
 ## Project Description
