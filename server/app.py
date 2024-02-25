@@ -29,7 +29,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://airbnb-booking-sys.onrender.com", "methods": ["GET", "POST", "DELETE"], "allow_headers": ["Content-Type"]}} )
-    
+       
 
     # Initialize SQLAlchemy
     db.init_app(app)
