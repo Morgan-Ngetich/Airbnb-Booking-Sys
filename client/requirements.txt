@@ -4,6 +4,7 @@ bcrypt==4.1.2
 beautifulsoup4==4.12.3
 blinker==1.7.0
 bs4==0.0.2
+cachelib==0.9.0
 certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
@@ -11,6 +12,7 @@ dnspython==2.5.0
 email-validator==2.1.0.post1
 Faker==23.2.0
 Flask==3.0.2
+Flask-Caching==2.1.0
 Flask-Cors==4.0.0
 Flask-JWT-Extended==4.6.0
 Flask-Login==0.6.3
