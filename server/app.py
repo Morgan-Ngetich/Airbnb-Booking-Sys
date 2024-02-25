@@ -14,10 +14,9 @@ from wtforms.validators import DataRequired, Email, Length, ValidationError
 from email_validator import validate_email, EmailNotValidError
 from models import db, User, PropertyListing, Booking, Review, Notification
 from flask_migrate import Migrate
+from flask_caching import Cache
 
 def create_app():
-    
-
     app = Flask(
         __name__,
         static_url_path='',
@@ -29,29 +28,33 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+    CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://airbnb-booking-sys.onrender.com", "methods": ["GET", "POST", "DELETE"], "allow_headers": ["Content-Type"]}} )
+    # CORS(app)
+
     # Initialize SQLAlchemy
     db.init_app(app)
     migrate = Migrate()
     migrate.init_app(app, db)
 
-    CORS(app, supports_credentials=True)
     api = Api(app)
 
     # Initialize CSRF protection
-    # The following variable is intentionally not used, as it is used for CSRF protection
-    csrf = CSRFProtect(app)
-    
 
     # Configure session to use cookies
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
     app.config['SESSION_TYPE'] = 'filesystem'  # Use filesystem for storing session data
-
     app.secret_key = 'b1293b030621e7fae3ba76e9544b26b03b792faecae8be6def59a205fc622eda'
 
+    csrf = CSRFProtect(app)
+    
     # Create tables
     with app.app_context():
         db.create_all()
+        
+        # Configure caching
+    app.config['CACHE_TYPE'] = 'simple'
+    cache = Cache(app)
 
     # User registration form
     class RegistrationForm(FlaskForm):
@@ -91,7 +94,6 @@ def create_app():
                 for field, errs in form.errors.items():
                     errors[field] = errs[0]
                 return {'error': errors}, 400
-
 
         def get(self):
             form = RegistrationForm()
@@ -138,6 +140,7 @@ def create_app():
 
     # Check session
     class CheckSession(Resource):
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self):
             user = User.query.filter(User.id == session.get('user_id')).first()
             if user:
@@ -147,19 +150,21 @@ def create_app():
 
     # Generate and return CSRF token
     class CSRFToken(Resource):
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self):
             csrf_token = generate_csrf()
             return {'csrf_token': csrf_token}, 200
 
     # User resource
-    class UserResource(Resource):
+    class UserResource(Resource):        
         def post(self):
             data = request.json
             new_user = User(**data)
             db.session.add(new_user)
             db.session.commit()
             return {'message': 'User created successfully'}, 201
-
+        
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self):
             users = User.query.all()
             result = [{'id': user.id, 'username': user.username, 'email': user.email} for user in users]
@@ -167,6 +172,7 @@ def create_app():
 
     # User detail resource
     class UserDetailResource(Resource):
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self, user_id):
             if 'user_id' not in session:
                 return {'error': 'Unauthorized'}, 401
@@ -180,7 +186,8 @@ def create_app():
             if not user:
                 return {'error': 'User not found'}, 404
             return {'id': user.id, 'username': user.username, 'email': user.email}, 200
-
+        
+        
         def patch(self, user_id):
             if 'user_id' not in session:
                 return {'error': 'Unauthorized'}, 401
@@ -199,7 +206,6 @@ def create_app():
             db.session.commit()
             return {'message': 'User updated successfully'}, 200
 
-
         def delete(self, user_id):
             if 'user_id' not in session:
                 return {'error': 'Unauthorized'}, 401
@@ -217,7 +223,7 @@ def create_app():
             return {'message': 'User deleted successfully'}, 200
 
     # Property listing resource
-    class PropertyListingResource(Resource):
+    class PropertyListingResource(Resource):        
         def post(self):
             if 'user_id' not in session:
                 return {'error': 'Unauthorized'}, 401
@@ -228,12 +234,12 @@ def create_app():
             db.session.commit()
             return {'message': 'Property listing created successfully'}, 201
 
-        def get(self):
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
+        def get(self):            
             property_listings = PropertyListing.query.all()
             result = []
-            for listing in property_listings:            
+            for listing in property_listings:
                 host_username = User.query.get(listing.host_id).username
-                
                 result.append({
                     'id': listing.id,
                     'title': listing.title,
@@ -241,15 +247,15 @@ def create_app():
                     'price': float(listing.price),
                     'location': listing.location,
                     'images': listing.images,
-                    'check_in_date':listing.check_in_date.strftime('%Y-%m-%d'),
-                    'check_out_date':listing.check_in_date.strftime('%Y-%m-%d'),
-                    'host_username': host_username 
+                    'check_in_date': listing.check_in_date.strftime('%Y-%m-%d'),
+                    'check_out_date': listing.check_out_date.strftime('%Y-%m-%d'),
+                    'host_username': host_username
                 })
-            
             return result, 200
 
     # Property listing detail resource
     class PropertyListingDetailResource(Resource):
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self, listing_id):
             listing = PropertyListing.query.get(listing_id)
             if not listing:
@@ -265,9 +271,9 @@ def create_app():
                 'price': float(listing.price),
                 'location': listing.location,
                 'images': listing.images,
-                'check_in_date':listing.check_in_date.strftime('%Y-%m-%d'),
-                'check_out_date':listing.check_in_date.strftime('%Y-%m-%d'),
-                'host_username': host_username 
+                'check_in_date': listing.check_in_date.strftime('%Y-%m-%d'),
+                'check_out_date': listing.check_in_date.strftime('%Y-%m-%d'),
+                'host_username': host_username
             }, 200
 
         def put(self, listing_id):
@@ -306,15 +312,16 @@ def create_app():
             db.session.commit()
             return {'message': 'Booking created successfully'}, 201
 
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self):
             user_id = request.args.get('user_id')
             if not user_id:
                 return {'error': 'User ID is required'}, 400
-            
+
             bookings = Booking.query.filter_by(guest_id=user_id).all()
             if not bookings:
                 return {'error': "User hasn't made any bookings yet."}, 404
-            
+
             result = []
             for booking in bookings:
                 guest = User.query.get(booking.guest_id)
@@ -335,11 +342,12 @@ def create_app():
 
     # Booking detail resource
     class BookingDetailResource(Resource):
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self, booking_id):
             booking = Booking.query.get(booking_id)
             if not booking:
                 return {'error': "Booking not found."}, 404
-            
+
             guest = User.query.get(booking.guest_id)
             property_listing = PropertyListing.query.get(booking.property_id)
 
@@ -356,13 +364,12 @@ def create_app():
                 'status': booking.status
             }, 200
 
-
         def post(self, booking_id):
             if 'user_id' not in session:
                 return {'error': 'Unauthorized'}, 401
 
             data = request.json
-            
+
             data['start_date'] = datetime.strptime(data['start_date'], '%Y-%m-%d').date()
             data['end_date'] = datetime.strptime(data['end_date'], '%Y-%m-%d').date()
 
@@ -378,8 +385,7 @@ def create_app():
             for key, value in data.items():
                 setattr(booking, key, value)
             db.session.commit()
-            return {'message': 'Booking updated successfully'}, 200    
-
+            return {'message': 'Booking updated successfully'}, 200
 
         def delete(self, booking_id):
             if 'user_id' not in session:
@@ -404,6 +410,7 @@ def create_app():
             db.session.commit()
             return {'message': 'Review created successfully'}, 201
 
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self):
             property_id = request.args.get('property_id')
             if not property_id:
@@ -428,6 +435,7 @@ def create_app():
 
     # Review detail resource
     class ReviewDetailResource(Resource):
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self, review_id):
             review = Review.query.get(review_id)
             if not review:
@@ -444,14 +452,13 @@ def create_app():
                     'created_at': review.created_at.strftime('%Y-%m-%d')
                 }], 200
 
-
         def post(self, review_id):
             if 'user_id' not in session:
                 return {'error': 'Unauthorized'}, 401
 
             data = request.json
-            guest_id = session['user_id']  #user_id stored in session
-            property_id = data.get('property_id')  #property_id in the request data
+            guest_id = session['user_id']  # user_id stored in session
+            property_id = data.get('property_id')  # property_id in the request data
             created_at = data.get('created_at')
 
             if created_at is None:
@@ -460,7 +467,6 @@ def create_app():
             new_review = Review(guest_id=guest_id, created_at=created_at, **data)
             db.session.add(new_review)
             db.session.commit()
-
 
         def delete(self, review_id):
             if 'user_id' not in session:
@@ -485,6 +491,7 @@ def create_app():
             db.session.commit()
             return {'message': 'Notification created successfully'}, 201
 
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self):
             notifications = Notification.query.all()
             result = [{'id': notification.id, 'message': notification.message} for notification in notifications]
@@ -492,6 +499,7 @@ def create_app():
 
     # Notification detail resource
     class NotificationDetailResource(Resource):
+        @cache.cached(timeout=300)  # Cache the response for 5 minutes
         def get(self, notification_id):
             notification = Notification.query.get(notification_id)
             if not notification:
@@ -529,7 +537,7 @@ def create_app():
     api.add_resource(CheckSession, '/check_session')
     api.add_resource(CSRFToken, '/csrf_token')
 
-    # Resousce rou
+    # Resource routes
     api.add_resource(UserResource, '/users')
     api.add_resource(UserDetailResource, '/users/<int:user_id>')
     api.add_resource(PropertyListingResource, '/listings')
@@ -544,5 +552,5 @@ def create_app():
     return app
 
 if __name__ == '__main__':
-    app = create_app()    
+    app = create_app()
     app.run(port=5555)
