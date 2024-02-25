@@ -7,7 +7,7 @@ import { BiBath } from 'react-icons/bi';
 import { IoIosBed } from 'react-icons/io';
 import { FaRegUserCircle, FaTrashAlt } from "react-icons/fa";
 
-import { Button, Container, Row, Col, Form, Modal} from 'react-bootstrap';
+import { Button, Container, Row, Col, Form, Modal, Alert} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/BookingPage.css';
 import { BASE_URL } from './config.js';
@@ -23,10 +23,12 @@ const BookingPage = ({ user, csrfToken }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [status, setStatus] = useState('Reserved');
   const [showModal, setShowModal] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const [rating, setRating] = useState(1);
   const [review, setReview] = useState('');
   const [reviews, setReviews] = useState([]);
+  const isAuthenticated = user !== null; // Check if user is authenticated
 
   useEffect(() => {    
       // Fetch property details
@@ -53,11 +55,10 @@ const BookingPage = ({ user, csrfToken }) => {
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
-    // if (!isAuthenticated) {
-      // If user is not authenticated, redirect to signup page
-      // navigate('/signup');
-      // return;
-    // }
+    if (!isAuthenticated) {
+      // If user is not authenticated, redirect to signup page      
+      navigate('/signup');
+    }
     postReview();    
     window.location.reload();
   };
@@ -127,20 +128,26 @@ const BookingPage = ({ user, csrfToken }) => {
   
 
   const handleReserveNow = () => {
-    // Calculate total price based on number of guests and property's price per night
-    const totalPrice = num_guests * property.price;
-    const bookingDetails = {
-      guest_id: user.id,
-      property_id: property_id,
-      num_guests: num_guests,     
-      start_date: startDate, 
-      end_date: endDate,
-      total_price: totalPrice, // Assuming you have totalPrice state variable
-      status: status
-    };  
-    // Save booking details to the server or local storage
-    saveBooking(bookingDetails); 
-    setShowModal(false);   
+    if (!isAuthenticated) {
+      // If user is not authenticated, show the alert
+      setShowModal(false); // Close the reservation modal
+      setShowAlert(true); // Show the alert
+    } else {
+      // Calculate total price based on number of guests and property's price per night
+      const totalPrice = num_guests * property.price;
+      const bookingDetails = {
+        guest_id: user.id,
+        property_id: property_id,
+        num_guests: num_guests,     
+        start_date: startDate, 
+        end_date: endDate,
+        total_price: totalPrice, // Assuming you have totalPrice state variable
+        status: status
+      };  
+      // Save booking details to the server or local storage
+      saveBooking(bookingDetails); 
+      setShowModal(false);   
+    }
   };
 
   const saveBooking = (bookingDetails) => {
@@ -257,14 +264,19 @@ const BookingPage = ({ user, csrfToken }) => {
                         <Button variant="primary" type="submit" onClick={handleReviewSubmit}>
                           Submit Review
                         </Button>
-                        {/* {!isAuthenticated && (
+                        {!isAuthenticated && (
                           <p className="auth-message futuristic-text">You need to <Link to="/signup" className="futuristic-link">sign up</Link> to leave a review.</p>
-                        )} */}
+                        )}
                       </Form>
                     </div>
                   </>
                 ) : (
-                  <p className="futuristic-text">Loading...</p>
+                  <div className="d-flex justify-content-center mt-3">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="sr-only futuristic-text">Loading...</span>
+                    </div>
+                  </div>
+                  
                 )}
               </div>
             </div>
@@ -330,6 +342,24 @@ const BookingPage = ({ user, csrfToken }) => {
           <Button variant="primary" onClick={handleReserveNow}>Complete Book</Button>
         </Modal.Footer>
       </Modal>
+
+        {/* Alert for unauthenticated users */}
+        <Alert show={showAlert} variant="danger" className="alert-popup-bookingPage">
+          <Alert.Heading>You need to sign up or login first, to reserve this property!!!</Alert.Heading>
+        <hr />
+        <div className="d-flex justify-content-end">
+          <Button onClick={() => setShowAlert(false)} variant="outline-danger">
+            Cancel
+          </Button>
+          <Button onClick={() => navigate('/signup')} variant="danger" className="ml-2">
+            Sign Up
+          </Button>
+          <Button onClick={() => navigate('/login')} variant="danger" className="ml-2">
+            Login
+          </Button>
+        </div>
+      </Alert>
+
       
     </div>
   );

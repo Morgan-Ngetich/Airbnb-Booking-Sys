@@ -31,7 +31,7 @@ function App() {
             setErrors({ general: 'The CSRF token has expired. Please refresh the page' });
           } else {
             console.error('Error checking session:', err);
-            alert('Failed to check session. Please refresh the page.');
+            alert('Failed to check session. Please wait.');
           }
         });
       }

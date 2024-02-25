@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { RiUserFill, RiLockPasswordFill, RiMailFill } from 'react-icons/ri'; // Importing icons
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/SignupForm.css';
+import {Modal, Alert } from 'react-bootstrap'
 
 import useCsrf from './hooks';
 import { BASE_URL } from './config.js';
+
 
 const SignupForm = ({ onLogin }) => {
   const csrfToken = useCsrf();
@@ -59,7 +61,9 @@ const SignupForm = ({ onLogin }) => {
       }
     }).catch((error) => {
       console.error('Signup  error:', error);
-      alert('Signup failed. Please try again.');
+      <Alert variant="danger">
+        Signup Failed try again!!
+      </Alert>
     });
   }
       

@@ -126,7 +126,11 @@ const Homepage = () => {
           ))}
         </div>
       ) : (
-        <p>Loading...</p>
+        <div className="d-flex justify-content-center mt-7">
+          <div className="spinner-border text-primary" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
       )}
 
       {selectedProperty && (
