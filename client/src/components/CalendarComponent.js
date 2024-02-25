@@ -115,9 +115,9 @@ const Component = () => {
             value={`${checkInDate ? checkInDate : 'Check-in'} - ${checkOutDate ? checkOutDate : 'Check-out'}`}
             readOnly
           />
-          <Link to='/search'>
+          
             <i className="fas fa-search position-absolute top-50 translate-middle-y end-0 me-2"></i>
-          </Link >
+          
           
         </div>
         <div className="popover">

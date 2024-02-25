@@ -1,5 +1,5 @@
 // In your frontend code, e.g., in a config.js file
-let API_BASE_URL = 'http://localhost:5555'; // Default base URL for development
+let API_BASE_URL = 'http://localhost:5000'; // Default base URL for development
 
 // Check if the app is running in production
 if (process.env.NODE_ENV === 'production') {
