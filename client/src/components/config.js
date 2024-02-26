@@ -4,7 +4,7 @@ let API_BASE_URL = 'http://localhost:5000'; // Default base URL for development
 // Check if the app is running in production
 if (process.env.NODE_ENV === 'production') {
   // Update the base URL for production
-  API_BASE_URL = 'https://airbnb-booking-sys-1.onrender.com';
+  API_BASE_URL = 'https://airbnb-booking-sys.onrender.com';
 }
 
 // Export the base URL for use in other parts of your app
