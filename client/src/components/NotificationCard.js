@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../css/NotificationCard.css';
 import { Button, Modal } from 'react-bootstrap';
 import { BiBell } from "react-icons/bi";
-import { BASE_URL } from './config.js';
+
 
 function NotificationCard({ id, csrf }) {
   const [notifications, setNotifications] = useState([]);
@@ -13,7 +13,7 @@ function NotificationCard({ id, csrf }) {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/notifications`);
+        const response = await fetch(`/notifications`);
         if (!response.ok) {
           throw new Error('Failed to fetch notifications');
         }
@@ -32,7 +32,7 @@ function NotificationCard({ id, csrf }) {
 
   const handleDelete = async (notificationId) => {
     try {
-      const response = await fetch(`${BASE_URL}/notifications/${notificationId}`, {
+      const response = await fetch(`/notifications/${notificationId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

@@ -10,12 +10,14 @@ import { FaRegUserCircle, FaTrashAlt } from "react-icons/fa";
 import { Button, Container, Row, Col, Form, Modal, Alert} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/BookingPage.css';
-import { BASE_URL } from './config.js';
+
 
 const BookingPage = ({ user, csrfToken }) => {
   const navigate = useNavigate();
 
   const { property_id } = useParams();
+  // const { guest_id } = useParams()
+
   const [property, setProperty] = useState(null);
   const [num_guests, setNumGuests] = useState(1);
   const [startDate, setStartDate] = useState('');
@@ -30,15 +32,17 @@ const BookingPage = ({ user, csrfToken }) => {
   const [reviews, setReviews] = useState([]);
   const isAuthenticated = user !== null; // Check if user is authenticated
 
+  console.log(property_id)
+
   useEffect(() => {    
       // Fetch property details
-      fetch(`${BASE_URL}/listings/${property_id}`)
+      fetch(`/listings/${property_id}`)
         .then(response => response.json())
         .then(data => setProperty(data))
         .catch(error => console.error('Error fetching property data:', error));
 
       // Fetch reviews
-      fetch(`${BASE_URL}/reviews?property_id=${property_id}`)
+      fetch(`/reviews?property_id=${property_id}`)      
         .then(response => response.json())
         .then(data => {
           if (Array.isArray(data)) {
@@ -59,8 +63,8 @@ const BookingPage = ({ user, csrfToken }) => {
       // If user is not authenticated, redirect to signup page      
       navigate('/signup');
     }
-    postReview();    
-    window.location.reload();
+    postReview(); 
+   
   };
 
   const postReview = () => {
@@ -69,9 +73,10 @@ const BookingPage = ({ user, csrfToken }) => {
       rating: rating,
       comment: review
     };
+       
   
     // Simulate posting review to server and receiving response
-    fetch(`${BASE_URL}/reviews/${property_id}`, {
+    fetch(`/reviews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,15 +91,16 @@ const BookingPage = ({ user, csrfToken }) => {
       return response.json();
     })
     .then(data => {
-      // Fetch guest username for the new review
-      fetch(`${BASE_URL}/user/${data.guest_id}`)
-        .then(response => response.json())
+      // Fetch guest userID for the new review
+      fetch(`/user/${user.id}`)
+        .then(response => response.json())        
         .then(userData => {
           // Update the reviews state with the new review and guest username
           setReviews([...reviews, { ...data, guest_username: userData.username }]);
-          setRating(0);
-          setReview('');          
-        })
+          setRating(1);
+          setReview('');
+          setShowModal(false); // Close the review modal
+      })
         .catch(error => {
           console.error('Error fetching guest username:', error);
         });
@@ -106,7 +112,7 @@ const BookingPage = ({ user, csrfToken }) => {
   };
   
   const handleDeleteReview = (reviewId) => {
-    fetch(`${BASE_URL}/reviews/${reviewId}`, {
+    fetch(`/reviews/${reviewId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -152,7 +158,7 @@ const BookingPage = ({ user, csrfToken }) => {
 
   const saveBooking = (bookingDetails) => {
     // Save booking details to the server
-    fetch(`${BASE_URL}/bookings/${user.id}`, {
+    fetch(`/bookings/${user.id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

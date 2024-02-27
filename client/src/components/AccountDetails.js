@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/AccountDetails.css";
 import { FaUser, FaEdit } from "react-icons/fa";
-import { BASE_URL } from './config.js';
+
 
 
 
@@ -14,7 +14,7 @@ const AccountDetails = ({ id, csrf}) => {
   useEffect(() => {
     const fetchAccountDetails = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/users/${id}`);
+        const response = await fetch(`/users/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch account details');
         }
@@ -42,7 +42,7 @@ const AccountDetails = ({ id, csrf}) => {
 
   const handleSubmit = async (updatedDetails) => {
     try {
-      const response = await fetch(`${BASE_URL}/users/${id}`, {
+      const response = await fetch(`/users/${id}`, {
         method: 'PATCH', // Use PATCH method for partial updates
         headers: {
           'Content-Type': 'application/json',

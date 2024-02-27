@@ -1,7 +1,7 @@
 // hooks.js
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BASE_URL } from './config.js';
+
 
 const useCsrf = () => {
   const [csrfToken, setCsrfToken] = useState('');
@@ -9,8 +9,9 @@ const useCsrf = () => {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/csrf_token`);
+        const response = await axios.get(`/csrf_token`);
         setCsrfToken(response.data.csrf_token);
+        console.log("csrfToken-1",csrfToken)
       } catch (error) {
         console.error('Failed to fetch CSRF token:', error);
       }
