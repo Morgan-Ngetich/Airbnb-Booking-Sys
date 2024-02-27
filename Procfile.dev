@@ -1,0 +1,2 @@
+web: cd client && npm start PORT=3000 
+api: gunicorn -b 127.0.0.1:5000 --chdir ./server run:create_app

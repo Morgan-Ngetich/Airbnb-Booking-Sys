@@ -1,4 +1,6 @@
-# import os
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from flask import Flask, jsonify, request, make_response, session, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -26,7 +28,7 @@ def create_app():
     
 
     # Configure SQLAlchemy
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com", "allow_headers": ["Content-Type"]}} )
@@ -60,8 +62,9 @@ def create_app():
     cache = Cache(app)
     
     @app.route('/')
-    def serve():
-        return send_from_directory(app.static_folder, 'index.html')
+    @app.route('/<int:id>')
+    def index(id=0):
+        return render_template("index.html")
 
     # User registration form
     class RegistrationForm(FlaskForm):
