@@ -1,4 +1,4 @@
-import os
+# import os
 
 from flask import Flask, jsonify, request, make_response, session, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -23,12 +23,13 @@ def create_app():
         static_folder='../client/build',
         template_folder='../client/build'
     )
+    
 
     # Configure SQLAlchemy
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com", "allow_headers": ["Content-Type"]}} )
+    # CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com", "allow_headers": ["Content-Type"]}} )
     # CORS(app, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com"}})
     CORS(app)
 
@@ -57,6 +58,10 @@ def create_app():
         # Configure caching
     app.config['CACHE_TYPE'] = 'simple'
     cache = Cache(app)
+    
+    @app.route('/')
+    def serve():
+        return send_from_directory(app.static_folder, 'index.html')
 
     # User registration form
     class RegistrationForm(FlaskForm):
@@ -96,9 +101,9 @@ def create_app():
                 for field, errs in form.errors.items():
                     errors[field] = errs[0]
                 return {'error': errors}, 400
-
+        
         def get(self):
-            form = RegistrationForm()
+            form = LoginForm()
             return render_template('signup.html', form=form)
 
     # User login form
@@ -116,7 +121,7 @@ def create_app():
                 password = form.password.data
 
                 user = User.query.filter_by(email=email).first()
-                if not user or not bcrypt.checkpw(password.encode('utf-8'), user.password_hash):
+                if not user or not user.verify_password(password):
                     return {'error': 'Invalid email or password'}, 401
 
                 # Create session for the authenticated user
@@ -151,8 +156,7 @@ def create_app():
                 return {'message': '401: Not Authorized'}, 401
 
     # Generate and return CSRF token
-    class CSRFToken(Resource):
-        @cache.cached(timeout=300)  # Cache the response for 5 minutes
+    class CSRFToken(Resource):        
         def get(self):
             csrf_token = generate_csrf()
             return {'csrf_token': csrf_token}, 200
@@ -407,12 +411,19 @@ def create_app():
                 return {'error': 'Unauthorized'}, 401
 
             data = request.json
-            new_review = Review(**data)
+            guest_id = session['user_id']  # Assuming 'user_id' is stored in the session
+            created_at = data.get('created_at')
+            
+            if created_at is None:
+                created_at = datetime.utcnow()  # Set to current timestamp if not provided
+
+            new_review = Review(guest_id=guest_id, created_at=created_at, **data)
             db.session.add(new_review)
             db.session.commit()
             return {'message': 'Review created successfully'}, 201
 
-        @cache.cached(timeout=300)  # Cache the response for 5 minutes
+
+        
         def get(self):
             property_id = request.args.get('property_id')
             if not property_id:
@@ -437,7 +448,7 @@ def create_app():
 
     # Review detail resource
     class ReviewDetailResource(Resource):
-        @cache.cached(timeout=300)  # Cache the response for 5 minutes
+        
         def get(self, review_id):
             review = Review.query.get(review_id)
             if not review:
@@ -476,7 +487,9 @@ def create_app():
 
             review = Review.query.get(review_id)
             if not review:
-                return {'error': 'Review not found'}, 404
+                return {'error': 'Review not found'}, 404           
+
+        
             db.session.delete(review)
             db.session.commit()
             return {'message': 'Review deleted successfully'}, 200

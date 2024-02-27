@@ -10,7 +10,6 @@ import BookingPage from './BookingPage';
 import Footer from './Footer';
 
 import useCsrf from './hooks';
-import { BASE_URL } from './config.js';
 
 const AuthLayout = ({ children }) => {
   return <div>{children}</div>;
@@ -22,7 +21,7 @@ function App() {
   const csrfToken = useCsrf();
 
   useEffect(() => {
-    fetch(`${BASE_URL}/check_session`).then((response) => {
+    fetch(`/check_session`).then((response) => {
       if (response.ok) {
         response.json().then((user) => setUser(user));
       } else {

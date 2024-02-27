@@ -9,7 +9,7 @@ import { IoGrid } from "react-icons/io5";
 import HomepageCard from './HomepageCard';
 import '../css/Homepage.css';
 import '../css/HomepageCard.css';
-import { BASE_URL } from './config.js';
+
 
 const Homepage = () => {
   const [properties, setProperties] = useState([]);
@@ -21,7 +21,7 @@ const Homepage = () => {
   
 
   useEffect(() => {
-    fetch(`${BASE_URL}/listings`)
+    fetch(`/listings`)
       .then(response => response.json())
       .then(data => setProperties(data))
       .catch(error => console.error('Error fetching data:', error));

@@ -5,7 +5,7 @@ import '../css/SignupForm.css';
 import {Modal, Alert } from 'react-bootstrap'
 
 import useCsrf from './hooks';
-import { BASE_URL } from './config.js';
+
 
 
 const SignupForm = ({ onLogin }) => {
@@ -33,7 +33,24 @@ const SignupForm = ({ onLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(`${BASE_URL}/signup`, {
+
+    const { password, confirmPassword, email } = formData;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+        setErrors({ ...errors, email: 'Invalid email address' });
+        return;
+    }
+    if (password.length < 6) {
+        setErrors({ ...errors, password: 'Password must be at least 6 characters long' });
+        return;
+    }
+    if (password !== confirmPassword) {
+        setErrors({ ...errors, confirmPassword: 'Passwords do not match' });
+        return;
+    }
+    console.log("csrfToken-2",csrfToken)
+    fetch(`/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
