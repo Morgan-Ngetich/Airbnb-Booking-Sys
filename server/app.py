@@ -1,6 +1,4 @@
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 from flask import Flask, jsonify, request, make_response, session, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -32,8 +30,8 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com", "allow_headers": ["Content-Type"]}} )
-    # CORS(app, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com"}})
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com"}})
+    # CORS(app)
 
 
     # Initialize SQLAlchemy
