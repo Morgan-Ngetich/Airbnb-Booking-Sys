@@ -1,5 +1,6 @@
 import os
 
+
 from flask import Flask, jsonify, request, make_response, session, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
@@ -59,10 +60,7 @@ def create_app():
     app.config['CACHE_TYPE'] = 'simple'
     cache = Cache(app)
     
-    @app.route('/')
-    @app.route('/<int:id>')
-    def index(id=0):
-        return render_template("index.html")
+
 
     # User registration form
     class RegistrationForm(FlaskForm):
