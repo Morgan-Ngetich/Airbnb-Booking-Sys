@@ -5,6 +5,7 @@ import '../css/SignupForm.css';
 import {Modal, Alert } from 'react-bootstrap'
 
 import useCsrf from './hooks';
+import customFetch from './api';
 
 
 
@@ -50,7 +51,7 @@ const SignupForm = ({ onLogin }) => {
         return;
     }
     console.log("csrfToken-2",csrfToken)
-    fetch(`/signup`, {
+    customFetch(`/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

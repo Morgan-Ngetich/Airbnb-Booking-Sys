@@ -10,7 +10,7 @@ import { FaRegUserCircle, FaTrashAlt } from "react-icons/fa";
 import { Button, Container, Row, Col, Form, Modal, Alert} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/BookingPage.css';
-
+import customFetch from './api';
 
 const BookingPage = ({ user, csrfToken }) => {
   const navigate = useNavigate();
@@ -36,13 +36,13 @@ const BookingPage = ({ user, csrfToken }) => {
 
   useEffect(() => {    
       // Fetch property details
-      fetch(`/listings/${property_id}`)
+      customFetch(`/listings/${property_id}`)
         .then(response => response.json())
         .then(data => setProperty(data))
         .catch(error => console.error('Error fetching property data:', error));
 
       // Fetch reviews
-      fetch(`/reviews?property_id=${property_id}`)      
+      customFetch(`/reviews?property_id=${property_id}`)      
         .then(response => response.json())
         .then(data => {
           if (Array.isArray(data)) {
@@ -76,7 +76,7 @@ const BookingPage = ({ user, csrfToken }) => {
        
   
     // Simulate posting review to server and receiving response
-    fetch(`/reviews`, {
+    customFetch(`/reviews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const BookingPage = ({ user, csrfToken }) => {
     })
     .then(data => {
       // Fetch guest userID for the new review
-      fetch(`/user/${user.id}`)
+      customFetch(`/user/${user.id}`)
         .then(response => response.json())        
         .then(userData => {
           // Update the reviews state with the new review and guest username
@@ -112,7 +112,7 @@ const BookingPage = ({ user, csrfToken }) => {
   };
   
   const handleDeleteReview = (reviewId) => {
-    fetch(`/reviews/${reviewId}`, {
+    customFetch(`/reviews/${reviewId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ const BookingPage = ({ user, csrfToken }) => {
 
   const saveBooking = (bookingDetails) => {
     // Save booking details to the server
-    fetch(`/bookings/${user.id}`, {
+    customFetch(`/bookings/${user.id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
