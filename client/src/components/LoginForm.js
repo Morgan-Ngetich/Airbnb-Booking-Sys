@@ -3,6 +3,7 @@ import { RiLockPasswordFill, RiMailFill } from 'react-icons/ri';
 import { Link, useNavigate } from 'react-router-dom';
 import '../css/LoginForm.css';
 import useCsrf from './hooks';
+import customFetch from './api';
 
 
 
@@ -32,7 +33,7 @@ const LoginForm = ({ onLogin }) => {
     form.append('email', formData.email);
     form.append('password', formData.password);
    
-    fetch(`/login`, {
+    customFetch(`/login`, {
       method: "POST",
       headers: {
         // "Content-Type": "application/json",
