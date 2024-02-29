@@ -36,8 +36,9 @@ const LoginForm = ({ onLogin }) => {
     customFetch(`/login`, {
       method: "POST",
       headers: {
-        // "Content-Type": "application/json",
+        "Content-Type": "application/json",
         'X-CSRFToken': csrfToken
+        credentials: 'include'
       },
       body: form,
     }).then((r) => {
