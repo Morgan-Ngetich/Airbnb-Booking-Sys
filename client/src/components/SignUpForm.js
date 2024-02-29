@@ -51,7 +51,7 @@ const SignupForm = ({ onLogin }) => {
         return;
     }
     // console.log("csrfToken-2",csrfToken)/
-    fetch(`https://airbnb-booking-sys.onrender.com/signup`, {
+    customFetch(`/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
