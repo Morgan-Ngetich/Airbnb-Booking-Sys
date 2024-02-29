@@ -36,10 +36,10 @@ const LoginForm = ({ onLogin }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'X-CSRFToken': csrfToken
-        credentials: 'include'
+        'X-CSRFToken': csrfToken        
       },
-      body: form,
+      credentials: 'include',
+      body: JSON.stringify(form),
     }).then((r) => {
       if (r.ok) {
         return r.json().then((user) => {

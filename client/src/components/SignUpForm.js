@@ -55,9 +55,9 @@ const SignupForm = ({ onLogin }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        'X-CSRFToken': csrfToken, // Set the CSRF token here
-        credentials: 'include'
+        'X-CSRFToken': csrfToken, // Set the CSRF token here        
       },
+      credentials: 'include',
       body: JSON.stringify(formData),
     }).then((r) => {      
       if (r.ok) {
