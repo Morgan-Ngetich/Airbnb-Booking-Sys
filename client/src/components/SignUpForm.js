@@ -50,7 +50,7 @@ const SignupForm = ({ onLogin }) => {
         setErrors({ ...errors, confirmPassword: 'Passwords do not match' });
         return;
     }
-    // console.log("csrfToken-2",csrfToken)/
+    
     customFetch(`/signup`, {
       method: "POST",
       headers: {
