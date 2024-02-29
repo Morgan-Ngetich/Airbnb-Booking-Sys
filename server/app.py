@@ -52,7 +52,7 @@ def create_app():
     app.config['SESSION_TYPE'] = 'filesystem'  # Use filesystem for storing session data
     app.secret_key = 'b1293b030621e7fae3ba76e9544b26b03b792faecae8be6def59a205fc622eda'
 
-    app.config.from_object(Config)
+    
     csrf = CSRFProtect(app)
     
     # Create tables

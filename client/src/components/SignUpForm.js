@@ -50,8 +50,8 @@ const SignupForm = ({ onLogin }) => {
         setErrors({ ...errors, confirmPassword: 'Passwords do not match' });
         return;
     }
-    console.log("csrfToken-2",csrfToken)
-    customFetch(`/signup`, {
+    // console.log("csrfToken-2",csrfToken)/
+    fetch(`https://airbnb-booking-sys.onrender.com/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
