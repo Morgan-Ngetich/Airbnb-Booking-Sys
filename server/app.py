@@ -30,8 +30,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    # CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com", "allow_headers": ["Content-Type"]}} )
-    CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*",  "allow_headers": ["Content-Type"]}})
+    CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com", "allow_headers": ["Content-Type"]}} )
+    # CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*",  "allow_headers": ["Content-Type"]}})
 
     # CORS(app, resources={r"/*": {"origins": "https://airbnb-booking-sys-1.onrender.com"}})
     # CORS(app)
@@ -52,6 +52,7 @@ def create_app():
     app.config['SESSION_TYPE'] = 'filesystem'  # Use filesystem for storing session data
     app.secret_key = 'b1293b030621e7fae3ba76e9544b26b03b792faecae8be6def59a205fc622eda'
 
+    app.config.from_object(Config)
     csrf = CSRFProtect(app)
     
     # Create tables
