@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request, make_response, session, render_templa
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_cors import CORS
+from flask_cors import cross_origin
 from datetime import datetime
 import bcrypt
 from flask_wtf import FlaskForm
@@ -80,6 +81,7 @@ def create_app():
 
     # User registration (signup)
     class SignUp(Resource):
+        @cross_origin(methods=['POST', 'OPTIONS'], headers=['Content-Type'])
         def post(self):
             form = RegistrationForm()
             if form.validate_on_submit():
@@ -103,7 +105,8 @@ def create_app():
                 for field, errs in form.errors.items():
                     errors[field] = errs[0]
                 return {'error': errors}, 400
-        
+
+        @cross_origin(methods=['GET', 'OPTIONS'])
         def get(self):
             form = LoginForm()
             return render_template('signup.html', form=form)
@@ -115,6 +118,7 @@ def create_app():
         submit = SubmitField('Login')
 
     # User authentication (login)
+    @cross_origin(methods=['POST', 'OPTIONS'], headers=['Content-Type'])
     class Login(Resource):
         def post(self):
             form = LoginForm(request.form)
@@ -136,6 +140,7 @@ def create_app():
                     errors[field] = errs[0]
                 return {'error': errors}, 400
 
+        @cross_origin(methods=['GET', 'OPTIONS'])
         def get(self):
             form = LoginForm()
             return render_template('login.html', form=form)
