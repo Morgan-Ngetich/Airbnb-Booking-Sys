@@ -84,8 +84,8 @@ const LoginForm = ({ onLogin }) => {
     <div className="login-form-container">
       <div className="sign-image">
         <h2>Demo</h2>
-        <h3>Username: donna44</h3>
-        <h3>Email: thomasgarcia@example.org</h3>
+        <p>Username: donna44</p>
+        <p>Email: thomasgarcia@example.org</p>
         <img src="https://canvas-generations-v1.s3.us-west-2.amazonaws.com/174667bf-d79f-46a0-8997-fcee0a0ef0d7.png" alt="Welcome-sign-img" />
       </div>
       {errors.general && (
